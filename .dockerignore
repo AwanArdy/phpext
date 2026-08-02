@@ -1,0 +1,5 @@
+# Docker environment (jangan ignore docker-entrypoint.sh — dibutuhkan COPY di Dockerfile)
+docker-compose.yml
+Dockerfile
+db_data/
+.installed

@@ -1,0 +1,59 @@
+services:
+  opencart:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opencart4
+    ports:
+      - "8080:80"
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=opencart
+      - MYSQL_USER=opencart
+      - MYSQL_PASSWORD=opencart123
+    volumes:
+      # Mount ekstensi langsung ke container
+      - ./upload/extension/advancedshipping:/var/www/html/extension/advancedshipping
+      # Persist OpenCart storage
+      - opencart_storage:/var/www/html/system/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.11
+    container_name: opencart4_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123
+      - MYSQL_DATABASE=opencart
+      - MYSQL_USER=opencart
+      - MYSQL_PASSWORD=opencart123
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: opencart4_pma
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=opencart
+      - PMA_PASSWORD=opencart123
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  opencart_storage:

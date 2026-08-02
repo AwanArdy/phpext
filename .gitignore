@@ -1,0 +1,120 @@
+# =========================
+# OS
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*~
+
+# =========================
+# IDE / Editor
+# =========================
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+.project
+.settings/
+.classpath
+*.iml
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+credentials.json
+
+# =========================
+# Docker
+# =========================
+.installed
+db_data/
+opencart_data/
+*.log
+
+# =========================
+# OpenCart runtime (jika ada full install lokal)
+# =========================
+config.php
+admin/config.php
+system/storage/cache/*
+system/storage/session/*
+system/storage/download/*
+system/storage/upload/*
+system/storage/logs/*
+!system/storage/cache/index.html
+!system/storage/session/index.html
+!system/storage/download/index.html
+!system/storage/upload/index.html
+!system/storage/logs/index.html
+image/cache/*
+
+# =========================
+# Build / Package artifacts
+# =========================
+*.ocmod.zip
+*.zip
+!upload/**/*.zip
+dist/
+build/
+*.tar
+*.tar.gz
+*.rar
+
+# =========================
+# PHP / Composer
+# =========================
+/vendor/
+composer.phar
+composer.lock
+.phpunit.result.cache
+.php-cs-fixer.cache
+.phpcs-cache
+coverage/
+.phpunit.cache/
+
+# =========================
+# Node (jika ada tooling frontend)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# =========================
+# Logs & temp
+# =========================
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+*.old
+*.orig
+
+# =========================
+# Debug / local dumps
+# =========================
+*.sql
+!**/install/*.sql
+*.sqlite
+*.db
+dump/
+exports/
