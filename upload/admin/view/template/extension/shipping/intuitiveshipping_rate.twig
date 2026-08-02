@@ -1,0 +1,916 @@
+<!doctype html>
+<!--
+//==================================================//
+// Product:	Intuitive Shipping              		//
+// Author: 	Joel Reeds                        		//
+// Company: OpenCart Addons                  		//
+// Website: http://www.opencartaddons.com        	//
+// Contact: http://www.opencartaddons.com/contact  	//
+//==================================================//
+-->
+{{ header }}
+
+{{ column_left }}
+
+<div id="content">
+
+  <div id="is-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-left">
+          <a href="{{ action_close }}"><img src="https://opencartaddons.com/image/{{ type }}/{{ extension }}/logo.png" alt="{{ text.text_name }}" class="img-responsive pull-left" /></a>
+        </div>
+        <div class="col-md-6 text-right">
+          <a class="btn btn-link" href="{{ action_close }}">{{ text.button_close }}</a>
+          <div class="btn-group" role="group">
+            <a class="btn btn-default" {% if action_previous %} href="{{ action_previous }}"{% endif %} data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_button_previous }}" {% if not action_previous %} disabled="disabled"{% endif %}><i class="fa fa-chevron-left"></i></a>
+            <a class="btn btn-default" {% if action_next %} href="{{ action_next }}"{% endif %} data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_button_next }}" {% if not action_next %} disabled="disabled"{% endif %}><i class="fa fa-chevron-right"></i></a>
+          </div>
+          <a class="btn btn-default" {% if action_copy %} href="{{ action_copy }}"{% else %}disabled="disabled"{% endif %}>{{ text.button_copy }}</a>
+          <a class="btn btn-oca" role="button" onclick="changes = false; $('#form').submit();">{{ text.button_save }}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="is-wrap">
+    <div id="is-content" class="container">
+
+      <div id="notification" class="row">
+        {% if success %} <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+        {% if error %} <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+      </div>
+
+      <form id="form" action="{{ action }}" method="post" class="form-horizontal">
+
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_general }}</h2>
+          </div>
+          <div class="col-md-9">
+            <div class="box">
+			  <input type="hidden" name="rate_id" value="{{ rate_id }}" />
+              <div class="form-group">
+                <label class="control-label col-md-3" for="description"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_description }}">{{ text.entry_description }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="description" id="description" value="{{ data.description }}" class="form-control" placeholder="{{ text.placeholder_description }}" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="status"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_rate_status }}">{{ text.entry_rate_status }}</span></label>
+                <div class="col-md-9">
+                  <input type="hidden" name="status" value="{{ data.status }}" />
+                  <div class="btn-group toggle" role="group">
+                    {% if data.status %}
+                    <button type="button" data-setting="status" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                    <button type="button" data-setting="status" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                    {% else %}
+                    <button type="button" data-setting="status" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                    <button type="button" data-setting="status" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="rate-group"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_group }}">{{ text.entry_group }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="group" id="rate-group" value="{{ data.group }}" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="tax-class-id"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_tax_class_id }}">{{ text.entry_tax_class_id }}</span></label>
+                <div class="col-md-9">
+                  <select name="tax_class_id" id="tax-class-id" class="form-control">
+                    {% for tax_class in tax_classes %}
+                      {% if tax_class.tax_class_id == data.tax_class_id %}
+                        <option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+                      {% else %}
+                        <option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="total-type"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_total_type }}">{{ text.entry_total_type }}</span></label>
+                <div class="col-md-9">
+                  <select name="total_type" id="total-type" class="form-control">
+                    {% for param_key, param in total_type %}
+                      {% if param_key == data.total_type %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                      {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="origin"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_origin }}">{{ text.entry_origin }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="origin" id="origin" class="form-control" value="{{ data.origin }}" placeholder="{{ text.placeholder_origin }}" />
+                  <span id="error-origin" class="rate-error" style="display: none;"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_display }}</h2>
+          </div>
+          <div class="col-md-9">
+            <div class="box">
+              <div class="form-group">
+                <label class="control-label col-md-3"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_name }}">{{ text.entry_name }}</span></label>
+                <div class="col-md-9">
+                  {% for lang in languages %}
+                  <div class="input-group">
+                    <input type="text" name="name[{{ lang.code }}]" id="name" value="{{ data.name[lang.code] ? data.name[lang.code] : '' }}" class="form-control" placeholder="{{ text.placeholder_name }}" />
+                    <span class="input-group-addon">{{ lang.name }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="sort-order" class="control-label col-md-3"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_rate_sort_order }}">{{ text.entry_sort_order }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="sort_order" id="sort-order" value="{{ data.sort_order }}" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% set x = 1 %}
+        {% for geo_zone_id, geo_zone in geo_zones %}
+        <div class="row">
+          {% if x == 1 %}
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_cost }}</h2>
+          </div>
+          {% else %}
+          <div class="col-md-3 hidden-sm hidden-xs">
+            &nbsp;
+          </div>
+          {% endif %}
+          <div class="col-md-9">
+            <div class="box">
+              <div class="clearfix">
+                <h3 class="pull-left">{{ geo_zone }}</h3>
+                <a role="button" class="btn btn-link pull-right edit" onclick="toggleGeoZone({{ geo_zone_id }});">{{ text.button_edit }}</a>
+              </div>
+              <div id="shipping-{{ geo_zone_id }}" {% if data.shipping[geo_zone_id].rates is empty %}style="display: none;"{% endif %}>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-rate-type"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_rate_type }}">{{ text.entry_rate_type }}</span></label>
+                  <div class="col-md-9">
+                    <div class="input-group">
+                      <select name="shipping[{{ geo_zone_id }}][rate_type]" id="shipping-{{ geo_zone_id }}-rate-type" class="form-control" onclick="toggleRateType({{ geo_zone_id }});">
+                      {% for key, value in rate_types %}
+                        {% if value %}
+                          <optgroup label="{{ text['text_rate_group_'~key] }}">
+                          {% for param_key, param in value %}
+                            {% if data.shipping[geo_zone_id].rate_type and param_key == data.shipping[geo_zone_id].rate_type %}
+                              <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                            {% else %}
+                              <option value="{{ param_key }}">{{ param }}</option>
+                            {% endif %}
+                          {% endfor %}
+                          </optgroup>
+                        {% endif %}
+                      {% endfor %}
+                      </select>
+                      <span class="input-group-addon"><a role="button" data-toggle="modal" data-target="#modalRateType" rel="tooltip" data-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                    </div>
+                  </div>
+                </div>
+                <div id="shipping-{{ geo_zone_id }}-shipping-factor" class="form-group" {% if not data.shipping[geo_zone_id].rate_type or 'dim_weight' in data.shipping[geo_zone_id].rate_type %}style="display: none;"{% endif %}>
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id}}-shipping-factor"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_shipping_factor}}">{{ text.entry_shipping_factor }}</span></label>
+                  <div class="col-md-9">
+                    <div class="input-group">
+                      <input type="text" name="shipping[{{ geo_zone_id }}][shipping_factor]" id="shipping-{{ geo_zone_id }}-shipping-factor" class="form-control" value="{{ data.shipping[geo_zone_id].shipping_factor ? data.shipping[geo_zone_id].shipping_factor : '' }}" />
+                      <span class="input-group-addon"><a role="button" data-toggle="modal" data-target="#modalShippingFactor" rel="tooltip" data-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                    </div>
+                    <span id="error-shipping-{{ geo_zone_id }}-shipping-factor" class="rate-error" style="display: none;"></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-currency"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_rate_currency }}">{{ text.entry_currency }}</span></label>
+                  <div class="col-md-9">
+                    <select name="shipping[{{ geo_zone_id }}][currency]" id="shipping-{{ geo_zone_id }}-currency" class="form-control" onchange="toggleCurrency({{ geo_zone_id }});">
+                      {% if not data.shipping[geo_zone_id].currency %} data.shipping[geo_zone_id].currency  config_currency {% endif %}
+                      {% for currency in currencies %}
+                        {% if data.shipping[geo_zone_id].currency and currency.code == data.shipping[geo_zone_id].currency %}
+                        <option value="{{ currency.code }}" selected="selected">{{ currency.title }}</option>
+                        {% else %}
+                        <option value="{{ currency.code }}">{{ currency.title }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div id="shipping-{{ geo_zone_id }}-rates" class="form-group" {% if data.shipping[geo_zone_id].rate_type and ('cart_' in data.shipping[geo_zone_id].rate_type or 'product_' in data.shipping[geo_zone_id].rate_type) %}style="display: none;"{% endif %}>
+                  <label class="control-label col-md-3">{{ text.entry_rates}} <a role="button" data-toggle="modal" data-target="#modalRates" rel="tooltip" data-placement="bottom" title="{{ text.text_example}}"><i class="fa fa-info-circle"></i></a></label>
+                  <div class="col-md-9">
+                    <table id="shipping-{{ geo_zone_id}}" class="rate-rows table table-responsive table-hover">
+                      <thead>
+                        <tr>
+                          <th>{{ text.column_rates_max}} <span class="shipping-{{ geo_zone_id }}-rate-unit"></span></th>
+                          <th>{{ text.column_rates_cost }} <span class="shipping-{{ geo_zone_id }}-rate-cost"></span></th>
+                          <th>{{ text.column_rates_per }} <span class="shipping-{{ geo_zone_id }}-rate-unit"></span></th>
+                          <th>&nbsp;</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% if data.shipping[geo_zone_id].rates %}
+                          {% for key, value in data.shipping[geo_zone_id].rates %}
+                          <tr>
+                            <td>
+                              <input type="text" name="shipping[{{ geo_zone_id }}][rates][{{ key }}][max]" class="form-control" value="{{ value.max }}" placeholder="{{ text.placeholder_rates_max }}" />
+                              <span id="error-shipping-{{ geo_zone_id }}-rates-max-{{ key }}" class="rate-error" style="display: none;"></span>
+                            </td>
+                            <td>
+                              <input type="text" name="shipping[{{ geo_zone_id }}][rates][{{ key }}][cost]" class="form-control" value="{{ value.cost }}" placeholder="{{ text.placeholder_rates_cost }}" />
+                              <span id="error-shipping-{{ geo_zone_id }}-rates-cost-{{ key }}" class="rate-error" style="display: none;"></span>
+                            </td>
+                            <td>
+                              <input type="text" name="shipping[{{ geo_zone_id }}][rates][{{ key }}][per]" class="form-control" value="{{ value.per }}" />
+                            </td>
+                            <td class="text-right"><button type="button" class="btn btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-minus-circle"></i></button></td>
+                          </tr>
+                          {% endfor %}
+                        {% endif %}
+                      </tbody>
+                      <tfoot>
+                        <tr id="shipping-{{ geo_zone_id }}-rates-footer"><td colspan="3">&nbsp;</td><td class="text-right"><button type="button" onclick="addRatesRow({{ geo_zone_id }});" class="btn btn-oca"><i class="fa fa-plus-circle"></i></button></td></tr>
+                      </tfoot>
+                    </table>
+                    <span id="error-shipping-{{ geo_zone_id }}-rates" class="rate-error" style="display: none;"></span>
+                  </div>
+                </div>
+                <div id="shipping-{{ geo_zone_id }}-shipping-method" class="form-group" {% if not data.shipping[geo_zone_id].rate_type or ('cart_' not in data.shipping[geo_zone_id].rate_type and 'product_' not in data.shipping[geo_zone_id].rate_type) %}style="display: none;"{% endif %}>
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id}}-shipping-method"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_shipping_method}}">{{ text.entry_shipping_method}}</span></label>
+                  <div class="col-md-9">
+                    <input type="text" name="shipping[{{ geo_zone_id}}][shipping_method]" id="shipping-{{ geo_zone_id }}-shipping-method" class="form-control" value="{{ data.shipping[geo_zone_id].shipping_method ? data.shipping[geo_zone_id].shipping_method : '' }}" placeholder="{{ text.placeholder_shipping_method }}" />
+                    <span id="error-shipping-{{ geo_zone_id }}-shipping-method" class="rate-error" style="display: none;"></span>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <a role="button" class="btn btn-link" onclick="toggleAdvancedOptions({{ geo_zone_id }});">{{ text.button_advanced_options }}</a>
+                </div>
+                <div id="advanced-options-{{ geo_zone_id }}" class="bg-info" style="display: none;">
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-final-cost"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_final_cost }}">{{ text.entry_final_cost }}</span></label>
+                    <div class="col-md-9">
+                      <div class="input-group">
+                        <select name="shipping[{{ geo_zone_id }}][final_cost]" id="shipping-{{ geo_zone_id }}-final-cost" class="form-control">
+                          {% for param_key, param in final_cost %}
+                            {% if data.shipping[geo_zone_id].final_cost and param_key == data.shipping[geo_zone_id].final_cost %}
+                              <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                            {% else %}
+                              <option value="{{ param_key }}">{{ param }}</option>
+                            {% endif %}
+                          {% endfor %}
+                        </select>
+                        <span class="input-group-addon"><a role="button" data-toggle="modal" data-target="#modalFinalCost" rel="tooltip" data-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-split">{{ text.entry_split }} <a role="button" data-toggle="modal" data-target="#modalSplitPackage" rel="tooltip" data-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></label>
+                    <div class="col-md-9">
+                      <input type="hidden" name="shipping[{{ geo_zone_id }}][split]" value="{{ data.shipping[geo_zone_id][split] ? data.shipping[geo_zone_id].split : 0 }}" />
+                      <div class="btn-group toggle" role="group">
+                        {% if data.shipping[geo_zone_id].split and data.shipping[geo_zone_id].split %}
+                        <button type="button" data-setting="shipping[{{ geo_zone_id }}][split]" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                        <button type="button" data-setting="shipping[{{ geo_zone_id }}][split]" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                        {% else %}
+                        <button type="button" data-setting="shipping[{{ geo_zone_id }}][split]" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                        <button type="button" data-setting="shipping[{{ geo_zone_id }}][split]" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_cost }}">{{ text.entry_cost }}</span></label>
+                    <div class="col-md-9 form-inline">
+                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][min]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.min ? data.shipping[geo_zone_id].cost.min : '' }}" placeholder="{{ text.placeholder_cost_min }}" style="width: 32%;" />
+                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][max]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.max ? data.shipping[geo_zone_id].cost.max : '' }}" placeholder="{{ text.placeholder_cost_max }}" style="width: 32%;" />
+                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][add]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.add ? data.shipping[geo_zone_id].cost.add : '' }}" placeholder="{{ text.placeholder_cost_add }}" style="width: 32%;" />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-freight-fee"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_freight_fee }}">{{ text.entry_freight_fee }}</span></label>
+                    <div class="col-md-9">
+                      <input type="text" name="shipping[{{ geo_zone_id }}][freight_fee]" id="shipping-{{ geo_zone_id }}-freight-fee" value="{{ data.shipping[geo_zone_id].freight_fee ? data.shipping[geo_zone_id].freight_fee : '' }}" class="form-control" placeholder="{{ text.placeholder_freight_fee }}" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% set x = x + 1 %}
+        {% endfor %}
+
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_ocapps }}</h2>
+          </div>
+          <div class="col-md-9">
+            <div class="box">
+              <div class="form-group">
+                <div class="col-md-12">
+                  <select name="ocapps_cost" class="form-control" {% if not ocapps_integration %} disabled="disabled"{% endif %} data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_ocapps_cost }}">
+                    {% for param_key, param in ocapps_cost %}
+                      {% if param_key == data.ocapps_cost %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                      {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-12">
+                  <select name="ocapps_requirement" class="form-control" {% if not ocapps_integration %} disabled="disabled"{% endif %} data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_ocapps_requirement }}">
+                    {% for param_key, param in ocapps_requirement %}
+                      {% if param_key == data.ocapps_requirement %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                      {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              {% if not ocapps_integration %}
+              <div class="bg-info text-center" style="padding: 20px;">{{ text.text_ocapps }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_requirements }}</h2>
+          </div>
+          <div class="col-md-9">
+            <div class="box">
+              <div class="form-group">
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <select name="requirement_match" class="form-control">
+                      {% for param_key, param in requirement_match %}
+                        {% if param_key == data.requirement_match %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                        {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                    <span class="input-group-addon"><a role="button" data-toggle="modal" data-target="#modalRequirementMatch" rel="tooltip" data-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <select name="requirement_cost" class="form-control">
+                      {% for param_key, param in requirement_cost %}
+                        {% if param_key == data.requirement_cost %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                        {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                    <span class="input-group-addon"><a role="button" data-toggle="modal" data-target="#modalRequirementCost" rel="tooltip" data-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <table id="requirement-rows" class="table table-responsive table-hover">
+                  <thead>
+                    <tr>
+                      <th>{{ text.column_requirement_type }}</th>
+                      <th>{{ text.column_requirement_operation }}</th>
+                      <th>{{ text.column_requirement_value }}</th>
+                      <th>&nbsp;</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% if data.requirements %}
+                      {% for key, value in data.requirements %}
+                        <tr>
+                          <td id="requirements-{{ key }}-type">
+                            <select name="requirements[{{ key }}][type]" class="form-control" onchange="getRequirement('{{ key }}')">
+                            {% for group, types in requirement_types %}
+                              {% if types %}
+                                <optgroup label="{{ text['text_requirement_group_'~group] }}">
+                                {% for param_key, param in types %}
+                                  {% if param_key == value.type %}
+                                    <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                                    {% set requirement_type_group = text['text_requirement_group_'~group] %}
+                                  {% else %}
+                                    <option value="{{ param_key }}">{{ param }}</option>
+                                  {% endif %}
+                                {% endfor %}
+                                </optgroup>
+                              {% endif %}
+                            {% endfor %}
+                            </select>
+                            <small id="requirements-{{ key }}-type-label">{{ requirement_type_group[0:-1] }}</small>
+                          </td>
+                          <td id="requirements-{{ key }}-operation">
+                            <select name="requirements[{{ key }}][operation]" onchange="checkParameter('{{ key }}')" class="form-control">
+                            {% for param_key, param in operations[value.type] %}
+                              {% if param_key == value.operation %}
+                              <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                              {% else %}
+                              <option value="{{ param_key }}">{{ param }}</option>
+                              {% endif %}
+                            {% endfor %}
+                            </select>
+                          </td>
+                          <td id="requirements-{{ key }}-value">
+                            {% if values[value.type] %}
+                              {% if value.type in value_types.checkbox %}
+                                <div class="well" data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_checkbox }}">
+                                {% for param_key, param in values[value.type] %}
+                                  <div class="is-checkbox"><input type="checkbox" name="requirements[{{ key }}][value][]" id="requirement-{{ key }}-{{ param_key }}" value="{{ param_key }}" {% if value.value and param_key in value.value %}checked="checked"{% endif %}><label for="requirement-{{ key}}-{{ param_key }}">{{ param }}</label></div>
+                                {% endfor %}
+                                </div>
+                              {% else %}
+                                <select name="requirements[{{ key }}][value]" class="form-control" data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_select }}">
+                                {% for param_key, param in values[value.type] %}
+                                  {% if param_key == value.value %}
+                                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                                  {% else %}
+                                  <option value="{{ param_key }}">{{ param }}</option>
+                                  {% endif %}
+                                {% endfor %}
+                                </select>
+                              {% endif %}
+                            {% elseif value.type in value_types.date %}
+                              <input type="text" name="requirements[{{ key}}][value]" class="form-control date" value="{{ value.value }}" data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_date }}" />
+                            {% elseif value.type in value_types.time %}
+                              <input type="text" name="requirements[{{ key}}][value]" class="form-control time" value="{{ value.value }}" data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_time }}" />
+                            {% elseif value.type in value_types.datetime %}
+                              <input type="text" name="requirements[{{ key}}][value]" class="form-control datetime" value="{{ value.value }}" data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_datetime }}" />
+                            {% else %}
+                              <input type="text" name="requirements[{{ key }}][value]" class="form-control" value="{{ value.value }}" data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_text }}" />
+                            {% endif %}
+                            <span id="error-requirement-{{ key }}" class="rate-error" style="display: none;"></span>
+                            {% if parameters[value.type] %}
+                              {% for parameter_type, parameter in parameters[value.type] %}
+                                <select name="requirements[{{ key }}][parameter][{{ parameter_type }}]" {% if value.operation == 'add' or value.operation == 'sub' %} style="display: none;"{% endif %} id="requirements-{{ key }}-parameter" class="form-control" {% if text['tooltip_'~value.type~ '_'~parameter_type] %} data-toggle="tooltip" data-placement="top" title="{{ text['tooltip_'~value.type~'_'~parameter_type] }}"{% endif %}>
+                                {% for param_key, param in parameter %}
+                                  {% if param_key == value.parameter[parameter_type] %}
+                                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                                  {% else %}
+                                  <option value="{{ param_key }}">{{ param }}</option>
+                                  {% endif %}
+                                {% endfor %}
+                                </select>
+                              {% endfor %}
+                            {% else %}
+                              <input type="hidden" name="requirements[{{ key }}][parameter]" value="" />
+                            {% endif %}
+                          </td>
+                          <td class="text-right"><button type="button" class="btn btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-minus-circle"></i></button></td>
+                        </tr>
+                      {% endfor %}
+                    {% endif %}
+                  </tbody>
+                  <tfoot>
+                    <tr id="{{ rate_id }}-requirement-footer"><td colspan="3">&nbsp;</td><td class="text-right"><button type="button" onclick="addRequirement({{ rate_id }});" class="btn btn-oca"><i class="fa fa-plus-circle"></i></button></td></tr>
+                  </tfoot>
+                </table>
+              </div>
+			  <div class="text-center">
+                <div class="is-checkbox"><input type="checkbox" name="fail_method" id="fail-method" value="1" {% if data.fail_method %}checked="checked"{% endif %}><label for="fail-method">{{ text.entry_fail_method }}</label></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 hidden-sm hidden-xs">&nbsp;</div>
+            <div class="col-md-4 col-xs-6 text-left">
+              <a class="btn btn-danger" role="button" {% if action_delete %} onclick="if (confirm('{{ text.text_warning_delete }}')) { changes = false; window.location.replace('{{ action_delete }}'); }"{% else %}disabled="disabled"{% endif %}>{{ text.button_rate_delete }}</a>
+            </div>
+            <div class="col-md-5 col-xs-6 text-right">
+              <a class="btn btn-link" href="{{ action_close }}">{{ text.button_close }}</a>
+              <a class="btn btn-oca" role="button" onclick="changes = false; $('#form').submit();">{{ text.button_save }}</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="is-footer">
+  {{ text.text_footer }}
+</div>
+
+<!--Modals-->
+<div class="modal fade" id="modalRateType" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_rate_type_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_rate_type_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalShippingFactor" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_shipping_factor_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_shipping_factor_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalRates" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_rates_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_rates_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalFinalCost" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_final_cost_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_final_cost_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalSplitPackage" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_split_package_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_split_package_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalRequirementMatch" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_requirement_match_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_requirement_match_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalRequirementCost" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_requirement_cost_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_requirement_cost_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript"><!--
+	$('.date').datetimepicker({format: 'Y-m-d', timepicker: false, allowBlank: true, scrollInput: false});
+	$('.time').datetimepicker({format: 'H:i', datepicker: false, allowBlank: true, scrollInput: false});
+	$('.datetime').datetimepicker({format: 'Y-m-d H:i', allowBlank: true, scrollInput: false});
+//--></script>
+
+<script type="text/javascript"><!--
+  {% if rate_errors %}
+    {% for key, value in rate_errors %}
+      $('#error-{{ key|replace({ '_':'-' }) }}').html('<i class="fa fa-exclamation-circle"></i> {{ value }}');
+      $('#error-{{ key|replace({ '_':'-' }) }}').show();
+    {% endfor %}
+    var changes = true;
+  {% else %}
+    var changes = false;
+  {% endif %}
+//--></script>
+
+<script type="text/javascript"><!--//
+  function addRatesRow(geo_zone_id) {
+    var key = new Date().getTime().toString(16);
+    html  = '<tr>';
+    html += '<td><input type="text" name="shipping['+ geo_zone_id +'][rates]['+ key +'][max]" value="" placeholder="{{ text.placeholder_rates_max }}" class="form-control" /></td>';
+    html += '<td><input type="text" name="shipping['+ geo_zone_id +'][rates]['+ key +'][cost]" value="" placeholder="{{ text.placeholder_rates_cost }}" class="form-control" /></td>';
+    html += '<td><input type="text" name="shipping['+ geo_zone_id +'][rates]['+ key +'][per]" value="" class="form-control" /></td>';
+    html += '<td class="text-right"><button type="button" class="btn btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-minus-circle"></i></button></td>';
+    html += '</tr>';
+
+    $('#shipping-'+ geo_zone_id +'>tbody').append(html);
+
+    changes = true;
+  }
+//--></script>
+
+<script type="text/javascript"><!--//
+  function addRequirement(rate_id) {
+    var key = new Date().getTime().toString(16);
+    html  = '<tr>';
+    html += '<td id="requirements-'+ key +'-type">';
+    html += '<select name="requirements['+ key +'][type]" class="form-control" onchange="getRequirement(\''+ key +'\');">';
+    {% for group, requirement_types in requirement_types %}
+      {% if requirement_types %}
+        html += '<optgroup label="{{ text['text_requirement_group_'~group] }}">';
+        {% for key, requirement_type in requirement_types %}
+          html += '<option value="{{ key }}">{{ requirement_type }}</option>';
+        {% endfor %}
+        html += '</optgroup>';
+      {% endif %}
+    {% endfor %}
+
+    html += '</select><small id="requirements-'+ key +'-type-label"></small></td>';
+    html += '<td id="requirements-'+ key +'-operation"><select name="requirements['+ key +'][operation]" onchange="checkParameter(\''+ key +'\');" class="form-control"><option value=""></option></select></td>';
+    html += '<td id="requirements-'+ key +'-value"><input type="hidden" name="requirements['+ key +'][value]" value="" /><input type="hidden" name="requirements['+ key +'][parameters]" value="" /></td>';
+    html += '<td class="text-right"><button type="button" class="btn btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-minus-circle"></i></button></td>';
+    html += '</tr>';
+
+    $('#requirement-rows>tbody').append(html);
+
+    changes = true;
+
+    getRequirement(key);
+  }
+//--></script>
+
+<script type="text/javascript"><!--//
+  function getRequirement(key) {
+    var type = $('select[name=\'requirements['+ key +'][type]\']').val();
+
+    $.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/requirement&type='+ type +'&key='+ key +'&{{ token }}',
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function() {},
+			complete: function() {},
+			success: function(json) {
+				$('.success, .warning, .attention, .error').remove();
+				$('.rate-error').hide();
+
+				if (json['success']) {
+          $('#requirements-'+ key +'-type-label').html(json['requirement_type_group']);
+          var previous_operation  = $('select[name=\'requirements['+ key +'][operation]\']').val();
+          var previous_value      = '';
+
+          $('select[name=\'requirements['+ key +'][operation]\']').empty();
+          $.each(json['operations'], function(id, name) {
+            if (previous_operation == id) {
+              $('select[name=\'requirements['+ key +'][operation]\']').append('<option value="'+ id +'" selected="selected">'+ name +'</option>');
+            } else {
+              $('select[name=\'requirements['+ key +'][operation]\']').append('<option value="'+ id +'">'+ name +'</option>');
+            }
+          });
+          $('select[name=\'requirements['+ key +'][operation]\']').focus();
+
+          html = '';
+          if (json['values']) {
+            if (json['value_type'] == 'checkbox') {
+              html += '<div class="well"';
+              if (json['value_tooltip']) { html += ' data-toggle="tooltip" data-placement="top" title="'+ json['value_tooltip'] +'"'; }
+              html += '>';
+              $.each(json['values'], function(id, name) {
+                html += '<div class="is-checkbox"><input type="checkbox" name="requirements['+ key +'][value][]" id="requirement-'+ key +'-'+ id.trim() +'" value="'+ id.trim() +'"><label for="requirement-'+ key +'-'+ id.trim() +'">'+ name +'</label></div>';
+              });
+              html += '</div>';
+            } else {
+              html += '<select name="requirements['+ key +'][value]" class="form-control"';
+              if (json['value_tooltip']) { html += ' data-toggle="tooltip" data-placement="top" title="'+ json['value_tooltip'] +'"'; }
+              html += '>';
+              $.each(json['values'], function(id, name) {
+                if (previous_value == id.trim()) {
+                  html += '<option value="'+ id.trim() +'" selected="selected">'+ name +'</option>';
+                } else {
+                  html += '<option value="'+ id.trim() +'">'+ name +'</option>';
+                }
+              });
+              html += '</select>';
+            }
+          } else {
+            html += '<input type="text" name="requirements['+ key +'][value]" class="form-control '+ json['value_type'] +'" value="'+ previous_value +'"';
+            if (json['value_tooltip']) { html += ' data-toggle="tooltip" data-placement="top" title="'+ json['value_tooltip'] +'"'; }
+            html += '/>';
+          }
+
+          html += '<span id="error-requirement-'+ key +'" class="rate-error" style="display: none;"></span>';
+
+          if (json['parameters']) {
+            $.each(json['parameters'], function(index, parameter) {
+              html += '<select name="requirements['+ key +'][parameter]['+ index +']" id="requirements-'+ key +'-parameter" class="form-control"';
+              if (json['parameter_tooltip']) { html += ' data-toggle="tooltip" data-placement="top" title="'+ json['parameter_tooltip'] +'"'; }
+              html += '>';
+              $.each(parameter, function(id, name) {
+                html += '<option value="'+ id +'">'+ name +'</option>';
+              });
+              html += '</select>';
+            });
+          } else {
+            html += '<input type="hidden" name="requirements['+ key +'][parameter]" class="form-control" value="" />';
+          }
+
+          $('#requirements-'+ key +'-value').html(html);
+
+          $('.date').datetimepicker({format: 'Y-m-d', timepicker: false, allowBlank: true, scrollInput: false});
+          $('.time').datetimepicker({format: 'H:i', datepicker: false, allowBlank: true, scrollInput: false});
+          $('.datetime').datetimepicker({format: 'Y-m-d H:i', allowBlank: true, scrollInput: false});
+
+          tooltips();
+
+          $("select.chzn-done").removeAttr("style", "").removeClass("chzn-done").addClass("form-control save").data("chosen", null).next().remove();
+        }
+      }
+    });
+  };
+//--></script>
+
+<script type="text/javascript"><!--//
+  function checkParameter(key) {
+    var operation = $('select[name=\'requirements['+ key +'][operation]\']').val();
+
+    if (operation == 'add' || operation == 'sub') {
+      $('#requirements-'+ key +'-parameter').hide();
+    } else {
+      $('#requirements-'+ key +'-parameter').show();
+    }
+  }
+//--></script>
+
+<script type="text/javascript"><!--//
+  function toggleAdvancedOptions(geo_zone_id) {
+    $('#advanced-options-'+ geo_zone_id).toggle();
+  }
+
+  function toggleGeoZone(geo_zone_id) {
+    $('#shipping-'+ geo_zone_id).toggle();
+  }
+//--></script>
+
+<script type="text/javascript"><!--
+  var tooltip_status = true;
+  function tooltips() {
+    if (tooltip_status) {
+      $('[data-toggle="tooltip"]').tooltip({'trigger': 'hover'});
+      $('[data-toggle="tooltip"]').tooltip('enable');
+      $('[rel="tooltip"]').tooltip({'trigger': 'hover'});
+      $('[rel="tooltip"]').tooltip('enable');
+    } else {
+      $('[data-toggle="tooltip"]').tooltip('disable');
+      $('[rel="tooltip"]').tooltip('disable');
+    }
+  }
+
+  $(document).ready(tooltips());
+//--></script>
+
+<script type="text/javascript"><!--
+	$('.toggle button').click(function(){
+    var parent = $(this).closest('.toggle');
+    if ($(this).hasClass('unlocked_active')) {
+      $('input[name=\''+ $(this).attr('data-setting') +'\']').val(0);
+    } else {
+      $('input[name=\''+ $(this).attr('data-setting') +'\']').val(1);
+    }
+
+    $('button', parent).toggleClass('unlocked_active unlocked_inactive btn-default btn-oca');
+
+    changes = true;
+  });
+//--></script>
+
+<script type="text/javascript"><!--
+  $('#form :input, #form select').change(function() {
+    changes = true;
+  });
+
+  window.onbeforeunload = function(){
+    if (changes) {
+      return '{{ text.text_warning_unsaved_changes }}';
+    }
+  };
+//--></script>
+
+<script type="text/javascript"><!--
+  var units = [];
+  {% for key, value in rate_types %}
+    {% if value %}
+      {% for param_key, param in value %}
+        {% if text['text_'~param_key|replace({'cart_':'', 'product_':''})] %}
+          units['{{ param_key}}'] = '{{ text['text_'~param_key|replace({'cart_':'', 'product_':''})] }}';
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+
+  var currencies = [];
+  {% for currency in currencies %}
+  currencies['{{ currency.code }}'] = '{{ currency.symbol_left ? currency.symbol_left : currency.symbol_right }}';
+  {% endfor %}
+
+  units['cart_total']     = currencies['{{ config_currency }}'];
+  units['product_total']  = currencies['{{ config_currency }}'];
+
+  function toggleRateType(geo_zone_id) {
+    var rate_type = $('select[name=\'shipping['+ geo_zone_id +'][rate_type]\']').val();
+    $('.shipping-'+ geo_zone_id +'-rate-unit').html('('+ units[rate_type] +')');
+
+    if (rate_type.includes('dim_weight')) {
+      $('#shipping-'+ geo_zone_id +'-shipping-factor').show();
+    } else {
+      $('#shipping-'+ geo_zone_id +'-shipping-factor').hide();
+    }
+
+    if (rate_type.includes('product_', 0) || rate_type.includes('cart_', 0)) {
+      $('#shipping-'+ geo_zone_id +'-rates').show();
+      $('#shipping-'+ geo_zone_id +'-shipping-method').hide();
+    } else {
+      $('#shipping-'+ geo_zone_id +'-rates').hide();
+      $('#shipping-'+ geo_zone_id +'-shipping-method').show();
+    }
+  }
+
+  function toggleCurrency(geo_zone_id) {
+    var currency = $('select[name=\'shipping['+ geo_zone_id +'][currency]\']').val();
+    $('.shipping-'+ geo_zone_id +'-rate-cost').html('('+ currencies[currency] +')');
+  }
+
+  {% for geo_zone_id, param in geo_zones %}
+  toggleRateType({{ geo_zone_id }});
+  toggleCurrency({{ geo_zone_id }});
+  {% endfor %}
+
+//--></script>
+
+<script type="text/javascript"><!--
+	$('.date').datetimepicker({format: 'Y-m-d', timepicker: false, allowBlank: true, scrollInput: false});
+	$('.time').datetimepicker({format: 'H:i', datepicker: false, allowBlank: true, scrollInput: false});
+	$('.datetime').datetimepicker({format: 'Y-m-d H:i', allowBlank: true, scrollInput: false});
+//--></script>
+
+{{ footer }}

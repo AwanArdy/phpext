@@ -1,0 +1,817 @@
+<!doctype html>
+<!--
+//==================================================//
+// Product:	Intuitive Shipping              		//
+// Author: 	Joel Reeds                        		//
+// Company: OpenCart Addons                  		//
+// Website: http://www.opencartaddons.com        	//
+// Contact: http://www.opencartaddons.com/contact  	//
+//==================================================//
+-->
+{{ header }}
+
+{{ column_left }}
+
+<div id="content">
+
+  {# if (!$rates && !$status) {  #}
+  <!--<div class="welcome">
+    <a class="btn btn-oca" href="{{ action_add }}">{{ text.button_welcome }}</a>
+  </div>-->
+  {# } else {  #}
+
+  <div id="is-header">
+    <div class="container">
+      <div class="row">
+        <img src="https://opencartaddons.com/image/{{ type }}/{{ extension }}/logo.png" alt="{{ text.text_name }}" class="img-responsive pull-left" />
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a role="button" class="btn btn-default" href="#tab-rates" data-toggle="tab">{{ text.tab_rate }}</a></li>
+          <li><a role="button" class="btn btn-default" href="#tab-combinations" data-toggle="tab">{{ text.tab_combination }}</a></li>
+          <li><a role="button" class="btn btn-default" href="#tab-settings" data-toggle="tab">{{ text.tab_settings }}</a></li>
+          <li><a role="button" class="btn btn-default" href="#tab-support" data-toggle="tab">{{ text.tab_support }}</a></li>
+          <li><button class="btn btn-info" data-toggle="modal" data-target="#modalInfo"><i class="fa fa-question-circle"></i></button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="is-wrap">
+
+    <div id="is-content" class="container">
+
+      <div id="notification" class="row">
+        {% if success %} <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+        {% if error %} <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+        {% if not status %} <div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> {{ text.text_notification_status }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+        {% if test %} <div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text.text_notification_test }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+      </div>
+
+      <div class="tab-content">
+        <div id="tab-rates" class="tab-pane active">
+          <div class="row">
+            <h2>{{ text.heading_rates }}</h2>
+            <div class="box">
+              <form id="rates" action="{{ action_delete }}" method="post">
+                <table id="rates" class="table table-hover table-responsive">
+                  <thead>
+                    <tr>
+                      <th class="text-left">&nbsp;</th>
+                      <th class="text-left">{{ text.column_description }}</th>
+                      <th class="text-left">{{ text.column_name }}</th>
+                      <th class="text-left">{{ text.column_status }}</th>
+                      <th class="text-left">{{ text.column_group }}</th>
+                      <th class="text-right">&nbsp;</th>
+                    </tr>
+                    <tr id="filter">
+                      <th><div class="is-checkbox"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" id="select-rate-all" style="styled"><label for="select-rate-all">&nbsp;</label></th>
+                      <th><input type="text" name="filter_description" value="" placeholder="{{ text.placeholder_filter_description }}" class="form-control filter" /></th>
+                      <th><input type="text" name="filter_name" value="" placeholder="{{ text.placeholder_filter_name }}" class="form-control filter" /></th>
+                      <th>
+                        <select name="filter_status" class="form-control filter">
+                          <option value="">{{ text.placeholder_filter_status }}</option>
+                          <option value="1">{{ text.text_on }}</option>
+                          <option value="0">{{ text.text_off }}</option>
+                        </select>
+                      </th>
+                      <th><input type="text" name="filter_group" value="" placeholder="{{ text.placeholder_filter_group }}" class="form-control filter" /></th>
+                      <th class="text-right"><a role="button" id="clearFilter" class="btn btn-default">{{ text.button_filter }}</a></th>
+                    </tr>
+                  </thead>
+                  <tbody id="rates-body">
+                    {% if rates %}
+                      {% for rate in rates %}
+                      <tr data-rate-edit="{{ rate.edit }}" id="rate{{ rate.rate_id }}">
+                        <td class="text-left"><div class="is-checkbox"><input type="checkbox" name="selected[]" value="{{ rate.rate_id }}" id="select-rate-{{ rate.rate_id }}" style="styled"><label for="select-rate-{{ rate.rate_id }}">&nbsp;</label></div></td>
+                        <td class="text-left"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.description }}</td>
+                        <td class="text-left"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.name }}</td>
+                        <td class="text-left">{{ rate.status }}</td>
+                        <td class="text-left">{{ rate.group }}</td>
+                        <td class="text-right">&nbsp;</td>
+                      </tr>
+                      {% endfor %}
+                    {% else %}
+                      <tr>
+                        <td colspan="7" class="text-center">{{ text.text_no_results }}</td>
+                      </tr>
+                    {% endif %}
+                  </tbody>
+                  <tfoot id="rates-footer">
+                    <tr>
+                      <td class="text-right" colspan="7">
+                        <div class="pull-right">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport">{{ text.button_import }}</button>
+                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport">{{ text.button_export }}</button>
+                          </div>
+                          <a class="btn btn-oca" href="{{ action_add }}">{{ text.button_add }}</a>
+                        </div>
+                        <a role="button" class="btn btn-danger pull-left" onclick="if (confirm('{{ text.text_warning_delete }}')) { $('#rates').submit(); }">{{ text.button_delete }}</a>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-combinations" class="tab-pane">
+          <div class="row">
+            <h2>{{ text.heading_combinations }}</h2>
+            <div class="box">
+              <table id="combinations" class="table table-responsive table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-left">{{ text.column_sort_order }}</th>
+                    <th class="text-left">{{ text.column_title_display }}</th>
+                    <th class="text-left" style="width: 35%">{{ text.column_formula }}</th>
+                    <th class="text-left">{{ text.column_method }}</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% set combination_row = 1 %}
+                  {% if combinations %}
+                    {% for combination in combinations %}
+                      <tr id="combination-{{ combination_row }}">
+                        <td>
+                          <input type="text" name="combinations[{{ combination_row }}][sort_order]" class="form-control save" value="{{ combination.sort_order }}" />
+                        </td>
+                        <td>
+                          <select name="combinations[{{ combination_row }}][title_display]" class="form-control save" onchange="$(this).val() == '4' ? $('.combination-title-{{ combination_row }}').fadeIn('slow') : $('.combination-title-{{ combination_row }}').hide();">
+                            {% for param_key, param in title_display %}
+                              {% if param_key  == combination.title_display %}
+                                <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                              {% else %}
+                                <option value="{{ param_key }}">{{ param }}</option>
+                              {% endif %}
+                            {% endfor %}
+                          </select>
+                          {% for lang in languages %}
+                          <div class="input-group combination-title-{{ combination_row }}" style="{% if combination.title_display != '4' %}display: none;{% endif %}">
+                            <input type="text" name="combinations[{{ combination_row }}][title][{{ lang.code }}]" value="{{ combination.title[lang.code] ? combination.title[lang.code] : '' }}" placeholder="{{ text.placeholder_name }}" class="form-control save" />
+                            <span class="input-group-addon">{{ lang.name }}</span>
+                          </div>
+                          {% endfor %}
+                        </td>
+                        <td>
+                          <input type="text" name="combinations[{{ combination_row }}][formula]" class="form-control save" value="{{ combination.formula }}" placeholder="{{ text.placeholder_formula }}" />
+                          <span id="error-combinations-{{ combination_row }}-formula" class="rate-error" style="display: none;"></span>
+                        </td>
+						<td>
+                          <select name="combinations[{{ combination_row }}][method]" class="form-control save">
+                            {% for param_key, param in combination_method %}
+                              {% if param_key  == combination.method %}
+                                <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                              {% else %}
+                                <option value="{{ param_key }}">{{ param }}</option>
+                              {% endif %}
+                            {% endfor %}
+                          </select>
+                        </td>
+                        <td style="text-align: right !important;"><button type="button" class="btn btn-danger" onclick="$('#combination-{{ combination_row }}').remove(); autosave();"><i class="fa fa-minus-circle"></i></button></td>
+                      </tr>
+                      {% set combination_row = combination_row + 1 %}
+                    {% endfor %}
+                  {% endif %}
+                </tbody>
+                <tfoot>
+                  <tr id="combination-footer">
+                    <td colspan="5" style="text-align: right !important;"><button type="button" class="btn btn-oca" onclick="addCombination();">{{ text.button_add_combination }}</button></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="box">
+              {{ text.help_combinations }}
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-settings" class="tab-pane">
+          <div class="row">
+            <h2>{{ text.heading_settings }}</h2>
+            <div class="box">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label for="system" class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_status }}">{{ text.entry_status }}</span></label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="status" value="{{ status }}" class="save" />
+                    <div class="btn-group toggle" role="group">
+                      {% if status %}
+                      <button type="button" data-setting="status" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                      <button type="button" data-setting="status" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                      {% else %}
+                      <button type="button" data-setting="status" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                      <button type="button" data-setting="status" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="test" class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_test }}">{{ text.entry_test }}</span></label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="test" value="{{ test }}" class="save" />
+                    <div class="btn-group toggle" role="group">
+                      {% if test %}
+                      <button type="button" data-setting="test" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                      <button type="button" data-setting="test" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                      {% else %}
+                      <button type="button" data-setting="test" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                      <button type="button" data-setting="test" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="title" class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_title }}">{{ text.entry_title }}</span></label>
+                  <div class="col-sm-9">
+                    {% for lang in languages %}
+                      <div class="input-group">
+                        <input type="text" name="title[{{ lang.code }}]" id="title" class="form-control save" value="{{ title[lang.code] ? title[lang.code] : '' }}" />
+                        <span class="input-group-addon">{{ lang.name }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="sort-order" class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_sort_order }}">{{ text.entry_sort_order }}</span></label>
+                  <div class="col-sm-9">
+                    <input type="text" name="sort_order" id="sort-order" class="form-control save" value="{{ sort_order }}" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="sort-quotes" class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_sort_quotes }}">{{ text.entry_sort_quotes }}</span></label>
+                  <div class="col-sm-9">
+                    <select name="sort_quotes" id="sort-quotes" class="form-control save">
+                      {% for param_key, param in sort_quote %}
+                        {% if param_key == sort_quotes %}
+                          <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                        {% else %}
+                          <option value="{{ param_key }}">{{ param }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="box">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label for="debug" class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_debug }}">{{ text.entry_debug }}</span></label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="debug" value="{{ debug }}" class="save" />
+                    <div class="btn-group toggle" role="group">
+                      {% if debug %}
+                      <button type="button" data-setting="debug" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                      <button type="button" data-setting="debug" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                      {% else %}
+                      <button type="button" data-setting="debug" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                      <button type="button" data-setting="debug" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                      {% endif %}
+                    </div>
+                    <a role="button" class="btn btn-default" data-toggle="modal" data-target="#modalDebug" onclick="reloadDebug();">{{ text.button_debug_view }}</a>
+                  </div>
+                </div>
+				<div class="form-group">
+                  <label for="cache" class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_cache }}">{{ text.entry_cache }}</span></label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="cache" value="{{ cache }}" class="save" />
+                    <div class="btn-group toggle" role="group">
+                      {% if cache %}
+                      <button type="button" data-setting="cache" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                      <button type="button" data-setting="cache" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                      {% else %}
+                      <button type="button" data-setting="cache" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                      <button type="button" data-setting="cache" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                      {% endif %}
+                    </div>
+                    <button class="btn btn-danger" onclick="clearCache();">{{ text.button_cache_clear }}</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="backup" class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_backup }}">{{ text.entry_backup }}</span></label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="backup" value="{{ backup }}" class="save" />
+                    <div class="btn-group toggle" role="group">
+                      {% if backup %}
+                      <button type="button" data-setting="backup" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                      <button type="button" data-setting="backup" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                      {% else %}
+                      <button type="button" data-setting="backup" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                      <button type="button" data-setting="backup" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                      {% endif %}
+                    </div>
+					<a role="button" class="btn btn-default" data-toggle="modal" data-target="#modalBackup">{{ text.button_backup_view }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="box">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label for="ocapps_status" class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_ocapps_status }}">{{ text.entry_ocapps_status }}</span></label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="ocapps_status" value="{{ ocapps_status }}" class="save" />
+                    <div class="btn-group toggle" role="group">
+                      {% if ocapps_status %}
+                      <button type="button" data-setting="ocapps_status" class="btn btn-default unlocked_active" {% if not ocapps_integration %}disabled="disabled"{% endif %}>{{ text.text_off }}</button>
+                      <button type="button" data-setting="ocapps_status" class="btn btn-oca unlocked_active" {% if not ocapps_integration %}disabled="disabled"{% endif %}>{{ text.text_on }}</button>
+                      {% else %}
+                      <button type="button" data-setting="ocapps_status" class="btn btn-oca unlocked_inactive" {% if not ocapps_integration %}disabled="disabled"{% endif %}>{{ text.text_off }}</button>
+                      <button type="button" data-setting="ocapps_status" class="btn btn-default unlocked_inactive" {% if not ocapps_integration %}disabled="disabled"{% endif %}>{{ text.text_on }}</button>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% if not ocapps_integration %}
+                <div class="bg-info text-center" style="padding: 20px;">{{ text.text_ocapps }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-support" class="tab-pane">
+          <div class="row">
+            <h2>{{ text.heading_support }}</h2>
+            <div class="box">
+              {{ text.help_support }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="box">
+              <form role="form" id="support" class="form-horizontal">
+                <div class="form-group">
+                  <label for="email" class="col-md-3 control-label">{{ text.entry_email }}</label>
+                  <div class="col-md-9">
+                    <input type="email" value="{{ email }}" name="email" id="email" class="form-control" disabled>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="order-id" class="col-md-3 control-label">{{ text.entry_order_id }}</label>
+                  <div class="col-md-9">
+                    <input type="text" name="order_id" id="order-id" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="enquiry" class="col-md-3 control-label">{{ text.entry_enquiry }}</label>
+                  <div class="col-md-9">
+                    <textarea name="enquiry" id="enquiry" class="form-control" style="height: 300px;" placeholder="{{ text.placeholder_enquiry }}"></textarea>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-oca" id="supportSubmit" {% if demo %}disabled="disabled"{% endif %}>{{ text.button_submit }}</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# }  #}
+
+</div>
+
+<div id="is-footer">
+  {{ text.text_footer }}
+</div>
+
+<!-- Loading / Saving Screens -->
+<div id="load" class="loading" style="display:none">
+	<div class="background"></div>
+	<div class="foreground">
+		<p>{{ text.text_loading }}</p>
+		<span><i class="fa fa-spinner fa-spin fa-3x"></i></span>
+	</div>
+</div>
+
+<div id="save" class="loading" style="display:none">
+	<div class="background"></div>
+	<div class="foreground">
+		<p>{{ text.text_saving }}</p>
+		<span><i class="fa fa-spinner fa-spin fa-3x"></i></span>
+	</div>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="modalWelcome" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_welcome_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_welcome_body }}
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-oca btn-block" href="{{ action_add }}">{{ text.button_welcome }}</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalInfo" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_info_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_info_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalDebug" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_debug_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_debug_body }}
+				<textarea wrap="off" readonly="readonly" id="debug-log" class="form-control" style="height: 350px;">{{ debug_log }}</textarea>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-danger" onclick="clearDebug();">{{ text.button_debug_clear }}</button>
+				<a class="btn btn-default" href="{{ debug_download }}" target="_blank">{{ text.button_debug_download }}</a>
+				<button type="button" class="btn btn-default" onclick="reloadDebug();">{{ text.button_debug_reload }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalBackup" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_backup_header }}</h4>
+			</div>
+			<div class="modal-body">
+        {{ text.modal_backup_body }}
+        <table class="table table-hover table-responsive">
+          <thead>
+            <tr>
+              <th class="text-left">{{ text.column_backup_comment }}</th>
+              <th class="text-right">{{ text.column_backup_date }}</th>
+              <th class="text-right">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for value in backups %}
+			<tr>
+              <td class="text-left">{{ value.comment }}</td>
+              <td class="text-right">{{ value.date }}</td>
+              <td class="text-right">
+                <a href="{{ backup_restore }}&file={{ value.file }}" class="btn btn-default">{{ text.button_backup_restore }}</a>
+                <a role="button" onclick="if (confirm('{{ text.warning_backup_delete }}')) { window.location.replace('{{ backup_clear }}&file={{ value.file }}'); }" class="btn btn-danger">{{ text.button_backup_clear }}</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-danger" onclick="if (confirm('{{ text.warning_backup_delete }}')) { window.location.replace('{{ backup_clear_all }}'); }">{{ text.button_backup_clear_all }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalImport" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_import_header }}</h4>
+			</div>
+			<div class="modal-body">
+				<form role="form" action="{{ action_import }}" method="post" enctype="multipart/form-data" id="import">
+				  <div class="form-group">
+					<input type="file" name="import" class="form-control" />
+				  </div>
+				</form>
+				{{ text.modal_import_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-default" onclick="$('#import').submit();">{{ text.button_import }}</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalExport" role="dialog">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ text.modal_export_header }}</h4>
+			</div>
+			<div class="modal-body">
+				{{ text.modal_export_body }}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<a class="btn btn-default" href="{{ action_export }}" target="_blank">{{ text.button_export }}</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript"><!--
+	function autosave(field_name) {
+    var field_array = 'input[name=\''+ field_name +'\'], select[name=\''+ field_name +'\'], textarea[name=\''+ field_name +'\']';
+
+    $.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/autosave&{{ token }}',
+			data: $('.save'),
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$(field_array).parent().removeClass('has-error');
+				$(field_array).parent().addClass('has-warning');
+			},
+			complete: function() {
+				$(field_array).parent().removeClass('has-warning');
+			},
+			success: function(json) {
+				$('.alert-success, .alert-warning, .alert-attention, .alert-danger, .alert-info').remove();
+
+				if (json['error']) {
+					$(field_array).parent().addClass('has-error');
+          $.each(json['error'], function(key, value) {
+            $('#error-'+ key.replace(/_/g, '-')).html(value);
+            $('#error-'+ key.replace(/_/g, '-')).show();
+					});
+        } else {
+          $(field_array).parent().addClass('has-success');
+          setTimeout(function() { $(field_array).parent().removeClass('has-success'); }, 3000);
+          $('.rate-error').hide();
+        }
+			}
+		});
+	}
+//--></script>
+
+<script type="text/javascript"><!--
+	var combination_row = {{ combination_row ? combination_row : 1 }};
+	function addCombination() {
+		html  = '<tr id="combination-'+ combination_row +'">';
+		html += ' <td><input type="text" name="combinations['+ combination_row +'][sort_order]" value="" class="form-control save" /></td>';
+		html += ' <td><select name="combinations['+ combination_row +'][title_display]" class="form-control save" onchange="$(this).val() == \'4\' ? $(\'.combination-title-'+ combination_row +'\').fadeIn(\'slow\') : $(\'.combination-title-'+ combination_row +'\').hide();">';
+		{% for param_key, param in title_display %}
+		html += '     <option value="{{ param_key }}">{{ param }}</option>';
+		{% endfor %}
+		html += ' </select>';
+		{% for lang in languages %}
+		html += ' <div class="input-group combination-title-'+ combination_row +'" style="display: none;">';
+		html += ' <input type="text" name="combinations['+ combination_row +'][title]" value="" placeholder="{{ text.text_name }}" class="form-control save" />';
+		html += ' <span class="input-group-addon">{{ lang.name }}</span>';
+		html += ' </div>';
+		{% endfor %}
+		html += ' </td>';
+		html += ' <td><input type="text" name="combinations['+ combination_row +'][formula]" class="form-control save" value="" placeholder="{{ text.placeholder_formula }}" />';
+		html += ' <span id="error-combinations-'+ combination_row +'-formula" class="rate-error" style="display: none;"></span></td>';
+		html += ' <td><select name="combinations['+ combination_row +'][method]" class="form-control save">';
+		{% for param_key, param in combination_method %}
+		html += '     <option value="{{ param_key }}">{{ param }}</option>';
+		{% endfor %}
+		html += ' </select></td>';
+		html += ' <td style="text-align: right !important;"><a class="btn btn-danger" onclick="$(\'#combination-'+ combination_row +'\').remove(); autosave();"><i class="fa fa-minus-circle"></i></a></td>';
+		html += '</tr>';
+
+		$('#combinations>tbody').append(html);
+
+		combination_row++;
+
+		$("select.chzn-done").removeAttr("style", "").removeClass("chzn-done").addClass("form-control save").data("chosen", null).next().remove();
+		$('.save').change(function() { autosave($(this).attr('name')); });
+		tooltips();
+	}
+//--></script>
+
+<script type="text/javascript"><!--
+	function clearDebug() {
+		$.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/clearDebug&{{ token }}',
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#load').show();
+			},
+			complete: function() {
+				$('#load').hide();
+			},
+			success: function(json) {
+				$('.alert-success, .alert-warning, .alert-attention, .alert-danger, .alert-info').remove();
+
+				if (json['success']) {
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					$('#debug-log').val('');
+				}
+			}
+		});
+	}
+//--></script>
+
+<script type="text/javascript"><!--
+	function reloadDebug() {
+		$.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/reloadDebug&{{ token }}',
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#load').show();
+			},
+			complete: function() {
+				$('#load').hide();
+			},
+			success: function(json) {
+				$('.alert-success, .alert-warning, .alert-attention, .alert-danger, .alert-info').remove();
+
+				if (json['error']) {
+					$('#modalDebug>.modal-body').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> '+ json['error'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				}
+
+				if (json['success']) {
+					$('#modalDebug>.modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					$('#debug-log').val(json['debug_log']);
+				}
+			}
+		});
+	}
+//--></script>
+
+<script type="text/javascript"><!--
+	function clearCache() {
+		$.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/clearCache&{{ token }}',
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#load').show();
+			},
+			complete: function() {
+				$('#load').hide();
+			},
+			success: function(json) {
+				$('.alert-success, .alert-warning, .alert-attention, .alert-danger, .alert-info').remove();
+
+				if (json['success']) {
+					$('#notification').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+				}
+			}
+		});
+	}
+//--></script>
+
+<script type="text/javascript"><!--
+	$('.toggle button').click(function(){
+    var parent = $(this).closest('.toggle');
+    if ($(this).hasClass('unlocked_active')) {
+      $('input[name=\''+ $(this).attr('data-setting') +'\']').val(0);
+    } else {
+      $('input[name=\''+ $(this).attr('data-setting') +'\']').val(1);
+    }
+
+    $('button', parent).toggleClass('unlocked_active unlocked_inactive btn-default btn-oca');
+
+    autosave();
+  });
+//--></script>
+
+<script type="text/javascript"><!--
+	$("select.chzn-done").removeAttr("style", "").removeClass("chzn-done").addClass("form-control save").data("chosen", null).next().remove();
+	$('.save').change(function() { autosave($(this).attr('name')); });
+	$('.save').keyup(function(e) { if (e.keyCode == 13) { autosave($(this).attr('name')); } });
+	$('[data-toggle="modal"]').modal({show: false});
+
+  function editRate() {
+    $('#rates-body tr td:not(:first-child)').click(function () {
+      window.location.replace($(this).parent().attr('data-rate-edit'));
+    });
+  }
+
+  $(document).ready(editRate());
+//--></script>
+
+<script type="text/javascript"><!--
+  var tooltip_status = true;
+  function tooltips() {
+    if (tooltip_status) {
+      $('[data-toggle="tooltip"]').tooltip({'trigger': 'hover'});
+      $('[data-toggle="tooltip"]').tooltip('enable');
+      $('[rel="tooltip"]').tooltip({'trigger': 'hover'});
+      $('[rel="tooltip"]').tooltip('enable');
+    } else {
+      $('[data-toggle="tooltip"]').tooltip('disable');
+      $('[rel="tooltip"]').tooltip('disable');
+    }
+  }
+
+  $(document).ready(tooltips());
+//--></script>
+
+<script type="text/javascript"><!--
+  $('.filter').change(function() { filter(); });
+	$('.filter').keyup(function(e) { if (e.keyCode == 13) { filter(); } });
+
+  $('#clearFilter').bind('click', function() {
+		$('.filter').val('');
+    filter();
+	});
+
+  function filter() {
+    $.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/filter&{{ token }}',
+			data: $('.filter'),
+			type: 'post',
+			dataType: 'json',
+			success: function(json) {
+        html  = '';
+        if (json['success'] && json['rates']) {
+          $.each(json['rates'], function(key, value) {
+            html += '<tr data-rate-edit="'+ value['edit'] +'" id="rate'+ key +'">';
+            html += '  <td class="text-left"><div class="is-checkbox"><input type="checkbox" name="selected[]" value="'+ key +'" id="select-rate-'+ key +'" style="styled"><label for="select-rate-'+ key +'">&nbsp;</label></div></td>';
+            html += '  <td class="text-left"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['description'] +'</td>';
+            html += '  <td class="text-left"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['name'] +'</td>';
+            html += '  <td class="text-left">'+ value['status'] +'</td>';
+            html += '  <td class="text-left">'+ value['group'] +'</td>';
+            html += '  <td class="text-right">&nbsp;</td>';
+            html += '</tr>';
+          });
+        } else {
+          html += '<tr><td colspan="5" class="text-center">{{ text.text_no_results }}</td></tr>';
+        }
+
+        $('#rates-body').html(html);
+
+        tooltips();
+        editRate();
+      }
+		});
+	};
+//--></script>
+
+<script type="text/javascript"><!--
+  {% if not demo %}
+	$('#supportSubmit').bind('click', function() {
+		$.ajax({
+			url: 'index.php?route=extension/{{ type }}/{{ extension }}/support&{{ token }}',
+			data: $('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea'),
+			type: 'post',
+			dataType: 'json',
+			beforeSend: function() {
+				$('#supportSubmit').before('<i class="loading-small fa fa-spinner fa-spin fa-2x"></i>');
+			},
+			complete: function() {
+				$('.loading-small').remove();
+			},
+			success: function(json) {
+				$('.alert-success, .alert-warning, .alert-attention, .alert-danger').remove();
+
+				if (json['error']) {
+					$('#support').prepend('<span class="alert alert-danger text-center col-sm-12">'+ json['error'] +'</span>');
+				}
+
+				if (json['success']) {
+					$('#support').prepend('<span class="alert alert-success text-center col-sm-12">'+ json['success'] +'</span>');
+					$('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea').val('');
+				}
+			}
+		});
+	});
+  {% endif %}
+//--></script>
+
+<script type="text/javascript"><!--
+  {% if not rates and not status %}
+  $('#modalWelcome').modal({show: true});
+  {% endif %}
+//--></script>
+
+{{ footer }}
