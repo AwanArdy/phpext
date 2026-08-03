@@ -86,6 +86,10 @@
 
 ### Metode 2: Upload Manual via FTP/SFTP
 
+> ⚠️ **Penting (OpenCart 4):** Menyalin file saja **tidak cukup**.  
+> Menu **Extensions → Shipping** hanya menampilkan ekstensi yang tercatat di tabel `extension_path` (hasil Installer), **bukan** hasil scan folder.  
+> Setelah upload manual, Anda **tetap harus** mendaftarkan ekstensi lewat Installer (Metode 1) atau lewat Docker entrypoint di repo ini.
+
 1. Upload seluruh isi folder `upload/extension/advancedshipping/` ke direktori OpenCart:
    ```
    <opencart-root>/extension/advancedshipping/
@@ -110,9 +114,24 @@
            └── language/en-gb/shipping/advancedshipping.php
    ```
 
-3. Login ke Admin Panel, navigasi ke **Extensions → Extensions → Shipping**
+3. **Daftarkan ke OpenCart** (pilih salah satu):
+   - Zip folder lalu upload via **Extensions → Installer**, **atau**
+   - Jika pakai Docker di repo ini: restart container (`docker compose up -d`) — entrypoint akan auto-register
 
-4. Cari **Advanced Shipping** dan klik **Install**, lalu **Edit**
+4. Login ke Admin Panel, navigasi ke **Extensions → Extensions → Shipping**
+
+5. Cari **Advanced Shipping** dan klik **Install** (ikon +), lalu **Edit**
+
+### Metode 3: Docker dev environment (repo ini)
+
+```bash
+docker compose up -d --build
+```
+
+Ekstensi di-mount ke `extension/advancedshipping/` dan **otomatis didaftarkan** ke database saat container start. Setelah itu:
+
+1. Admin → **Extensions → Extensions → Shipping**
+2. Install **Advanced Shipping** → Edit
 
 ---
 
