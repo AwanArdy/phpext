@@ -73,9 +73,12 @@ fi
 # Daftarkan Advanced Shipping ke OpenCart 4 (extension_install + extension_path).
 # OC4 TIDAK scan filesystem — daftar Shipping hanya dari tabel extension_path.
 # Tanpa ini, file di extension/advancedshipping/ tidak akan muncul di admin.
+# Catatan: PHP ditulis via heredoc ke file temp agar single-quote di SQL tidak
+# merusak quoting bash (bug sebelumnya membuat container crash-loop).
 register_advanced_shipping() {
     local EXT_DIR="/var/www/html/extension/advancedshipping"
     local CODE="advancedshipping"
+    local REGISTER_PHP="/tmp/register_advanced_shipping.php"
 
     if [ ! -f "${EXT_DIR}/install.json" ]; then
         echo "⚠️  Advanced Shipping belum di-mount (${EXT_DIR}), skip registrasi."
@@ -88,18 +91,19 @@ register_advanced_shipping() {
 
     echo "🔌 Mendaftarkan Advanced Shipping ke database OpenCart..."
 
-    php -r '
+    cat > "${REGISTER_PHP}" <<'PHP'
+<?php
 $extDir = "/var/www/html/extension/advancedshipping";
 $code = "advancedshipping";
 
 // Load DB config from OpenCart config.php
 $config = file_get_contents("/var/www/html/config.php");
-preg_match("/define\(\s*'\''DB_HOSTNAME'\''\s*,\s*'\''([^'\'']*)'\''/", $config, $h);
-preg_match("/define\(\s*'\''DB_USERNAME'\''\s*,\s*'\''([^'\'']*)'\''/", $config, $u);
-preg_match("/define\(\s*'\''DB_PASSWORD'\''\s*,\s*'\''([^'\'']*)'\''/", $config, $p);
-preg_match("/define\(\s*'\''DB_DATABASE'\''\s*,\s*'\''([^'\'']*)'\''/", $config, $d);
-preg_match("/define\(\s*'\''DB_PORT'\''\s*,\s*'\''([^'\'']*)'\''/", $config, $port);
-preg_match("/define\(\s*'\''DB_PREFIX'\''\s*,\s*'\''([^'\'']*)'\''/", $config, $pref);
+preg_match("/define\(\s*'DB_HOSTNAME'\s*,\s*'([^']*)'/", $config, $h);
+preg_match("/define\(\s*'DB_USERNAME'\s*,\s*'([^']*)'/", $config, $u);
+preg_match("/define\(\s*'DB_PASSWORD'\s*,\s*'([^']*)'/", $config, $p);
+preg_match("/define\(\s*'DB_DATABASE'\s*,\s*'([^']*)'/", $config, $d);
+preg_match("/define\(\s*'DB_PORT'\s*,\s*'([^']*)'/", $config, $port);
+preg_match("/define\(\s*'DB_PREFIX'\s*,\s*'([^']*)'/", $config, $pref);
 
 $host = $h[1] ?? getenv("MYSQL_HOST") ?: "db";
 $user = $u[1] ?? getenv("MYSQL_USER") ?: "opencart";
@@ -116,7 +120,8 @@ if ($m->connect_errno) {
 $m->set_charset("utf8mb4");
 
 // Skip if already registered
-$q = $m->query("SELECT extension_install_id FROM `{$prefix}extension_install` WHERE `code` = '" . $m->real_escape_string($code) . "' LIMIT 1");
+$codeEsc = $m->real_escape_string($code);
+$q = $m->query("SELECT extension_install_id FROM `{$prefix}extension_install` WHERE `code` = '{$codeEsc}' LIMIT 1");
 if ($q && $q->num_rows > 0) {
     $row = $q->fetch_assoc();
     $installId = (int)$row["extension_install_id"];
@@ -135,15 +140,19 @@ if ($q && $q->num_rows > 0) {
         $link = $meta["link"] ?? $link;
     }
     // Schema OC 4.0.x: extension_id, extension_download_id, name, code, version, author, link, status, date_added
+    $nameEsc = $m->real_escape_string($name);
+    $versionEsc = $m->real_escape_string($version);
+    $authorEsc = $m->real_escape_string($author);
+    $linkEsc = $m->real_escape_string($link);
     $m->query(
         "INSERT INTO `{$prefix}extension_install` SET " .
         "extension_id = 0, " .
         "extension_download_id = 0, " .
-        "name = '" . $m->real_escape_string($name) . "', " .
-        "code = '" . $m->real_escape_string($code) . "', " .
-        "version = '" . $m->real_escape_string($version) . "', " .
-        "author = '" . $m->real_escape_string($author) . "', " .
-        "link = '" . $m->real_escape_string($link) . "', " .
+        "name = '{$nameEsc}', " .
+        "code = '{$codeEsc}', " .
+        "version = '{$versionEsc}', " .
+        "author = '{$authorEsc}', " .
+        "link = '{$linkEsc}', " .
         "status = 1, " .
         "date_added = NOW()"
     );
@@ -167,10 +176,11 @@ foreach ($iterator as $file) {
     $full = $file->getPathname();
     // path format expected by OC4: advancedshipping/admin/controller/shipping/advancedshipping.php
     $rel = $code . "/" . ltrim(substr($full, strlen($extDir)), "/");
+    $relEsc = $m->real_escape_string($rel);
     $m->query(
         "INSERT INTO `{$prefix}extension_path` SET " .
         "extension_install_id = {$installId}, " .
-        "path = '" . $m->real_escape_string($rel) . "'"
+        "path = '{$relEsc}'"
     );
     $count++;
 }
@@ -178,19 +188,22 @@ echo "Registered {$count} extension paths.\n";
 
 // Critical path must exist for Shipping list
 $need = $code . "/admin/controller/shipping/advancedshipping.php";
-$chk = $m->query("SELECT path FROM `{$prefix}extension_path` WHERE path = '" . $m->real_escape_string($need) . "' LIMIT 1");
+$needEsc = $m->real_escape_string($need);
+$chk = $m->query("SELECT path FROM `{$prefix}extension_path` WHERE path = '{$needEsc}' LIMIT 1");
 if (!$chk || $chk->num_rows === 0) {
     fwrite(STDERR, "ERROR: missing critical path {$need}\n");
     exit(1);
 }
 echo "OK: Shipping list will include Advanced Shipping.\n";
-'
+PHP
 
-    if [ $? -eq 0 ]; then
+    # Jangan biarkan gagal registrasi menghentikan Apache (set -e).
+    if php "${REGISTER_PHP}"; then
         echo "✅ Advanced Shipping terdaftar."
     else
         echo "⚠️  Gagal mendaftarkan Advanced Shipping (cek log di atas)."
     fi
+    rm -f "${REGISTER_PHP}"
 }
 
 register_advanced_shipping

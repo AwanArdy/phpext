@@ -24,7 +24,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 			$this->response->redirect($this->link($this->route));
 		}
 
-		// Auto Backup
+		// Auto Backup (internal only — must NOT set JSON Content-Type on this HTML page)
 		if (!empty($this->field('backup'))) {
 			$backupStatus = true;
 			$backups = $this->getBackups();
@@ -35,12 +35,14 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 				}
 			}
 			if ($backupStatus) {
-				$this->createBackup('Automatic Backup');
+				$this->writeBackup('Automatic Backup');
 			}
 		}
 
 		$data = [];
 		$data['text'] = $this->load->language($this->route);
+		// Extension language overwrites shared keys (e.g. text_no_results) used by admin header/notifications
+		$this->load->language('default');
 
 		$data['type'] = $this->type;
 		$data['extension'] = $this->extension;
@@ -178,13 +180,15 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$data['ocapps_integration'] = $this->ocappsStatus;
 		$data['email'] = $this->config->get('config_email');
 
-		$this->document->addStyle('view/stylesheet/extension/' . $this->extension . '/shipping/' . $this->extension . '.css?v=' . $this->version);
+		// OC4 extension assets live under /extension/{code}/admin/view/... (not admin/view/stylesheet/extension/...)
+		$this->document->addStyle('../extension/' . $this->extension . '/admin/view/stylesheet/shipping/' . $this->extension . '.css?v=' . $this->version);
 		$this->document->setTitle($data['text']['text_name'] ?? 'Advanced Shipping');
 
 		$data['header']      = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer']      = $this->load->controller('common/footer');
 
+		$this->response->addHeader('Content-Type: text/html; charset=utf-8');
 		$this->response->setOutput($this->load->view('extension/' . $this->extension . '/shipping/' . $this->extension, $data));
 	}
 
@@ -272,6 +276,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 		$data = [];
 		$data['text'] = $this->load->language($this->route);
+		$this->load->language('default');
 
 		$data['type']       = $this->type;
 		$data['extension']  = $this->extension;
@@ -371,9 +376,9 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 		$data['ocapps_integration'] = $this->ocappsStatus;
 
-		$this->document->addStyle('view/stylesheet/extension/' . $this->extension . '/shipping/' . $this->extension . '.css?v=' . $this->version);
-		$this->document->addStyle('view/javascript/extension/' . $this->extension . '/shipping/' . $this->extension . '/jquery.datetimepicker.css');
-		$this->document->addScript('view/javascript/extension/' . $this->extension . '/shipping/' . $this->extension . '/jquery.datetimepicker.js');
+		$this->document->addStyle('../extension/' . $this->extension . '/admin/view/stylesheet/shipping/' . $this->extension . '.css?v=' . $this->version);
+		$this->document->addStyle('../extension/' . $this->extension . '/admin/view/javascript/shipping/' . $this->extension . '/jquery.datetimepicker.css');
+		$this->document->addScript('../extension/' . $this->extension . '/admin/view/javascript/shipping/' . $this->extension . '/jquery.datetimepicker.js');
 
 		$this->document->setTitle($data['text']['text_name'] ?? 'Advanced Shipping');
 
@@ -381,6 +386,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer']      = $this->load->controller('common/footer');
 
+		$this->response->addHeader('Content-Type: text/html; charset=utf-8');
 		$this->response->setOutput($this->load->view('extension/' . $this->extension . '/shipping/' . $this->extension . '_rate', $data));
 	}
 
@@ -437,7 +443,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 	public function delete(): void {
 		$this->validate();
-		$this->createBackup('Backup Created Prior To Rate Deletion');
+		$this->writeBackup('Backup Created Prior To Rate Deletion');
 		$this->cache->delete($this->extension . '_rates');
 
 		$this->load->language($this->route);
@@ -1066,24 +1072,43 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	/**
+	 * AJAX endpoint: create backup and return JSON.
+	 * Do not call this from HTML page actions — use writeBackup() instead so
+	 * Content-Type: application/json is not left on an HTML response.
+	 */
 	public function createBackup(string $comment = ''): void {
 		$this->validate(true);
 		$this->load->language($this->route);
 
-		if (!empty($this->field('backup'))) {
-			$comment    = !empty($this->request->get['comment']) ? (string)$this->request->get['comment'] : $comment;
-			$cleanComment = preg_replace('/[^\w\-]/', '_', $comment);
-			$file       = DIR_LOGS . $this->extension . '_backup_' . time() . '_' . $cleanComment . '.csv';
-			$backupData = $this->export(true);
-
-			if ($backupData) {
-				file_put_contents($file, $backupData);
-			}
-		}
+		$comment = !empty($this->request->get['comment']) ? (string)$this->request->get['comment'] : $comment;
+		$this->writeBackup($comment);
 
 		$json = ['success' => $this->language->get('text_success_backup')];
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	/**
+	 * Write a backup file without touching response headers/output.
+	 * Safe to call from index(), delete(), restoreBackup(), etc.
+	 */
+	private function writeBackup(string $comment = ''): bool {
+		if (empty($this->field('backup'))) {
+			return false;
+		}
+
+		$cleanComment = preg_replace('/[^\w\-]/', '_', $comment) ?: 'backup';
+		$file         = DIR_LOGS . $this->extension . '_backup_' . time() . '_' . $cleanComment . '.csv';
+		$backupData   = $this->export(true);
+
+		if ($backupData) {
+			file_put_contents($file, $backupData);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public function getBackups(): array {
@@ -1111,7 +1136,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$file = !empty($this->request->get['file']) ? (string)$this->request->get['file'] : null;
 
 		if ($file && file_exists(DIR_LOGS . $file)) {
-			$this->createBackup('Backup Created Prior To Restore');
+			$this->writeBackup('Backup Created Prior To Restore');
 			$this->load->model('extension/advancedshipping/shipping/advancedshipping');
 			$this->model_extension_advancedshipping_shipping_advancedshipping->deleteAllRates();
 			$this->import($file);
