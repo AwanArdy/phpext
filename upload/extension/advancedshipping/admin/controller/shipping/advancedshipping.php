@@ -646,7 +646,8 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 					$requirementData['operations'][$optKey][$op] = $requirementData['language']['text_operator_' . $op] ?? $op;
 				}
 
-				$optionValues = $this->model_catalog_option->getOptionValues($option['option_id']);
+				// OpenCart 4 renamed getOptionValues() → getValues()
+				$optionValues = $this->model_catalog_option->getValues((int)$option['option_id']);
 				foreach ($optionValues as $optVal) {
 					$requirementData['values'][$optKey][$optVal['option_value_id']] = htmlspecialchars($optVal['name'], ENT_QUOTES, 'UTF-8');
 				}
@@ -692,7 +693,8 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 					$requirementData['operations'][$cfKey][$op] = $requirementData['language']['text_operator_' . $op] ?? $op;
 				}
 
-				$cfValues = $this->model_customer_custom_field->getCustomFieldValues($cf['custom_field_id']);
+				// OpenCart 4 renamed getCustomFieldValues() → getValues()
+				$cfValues = $this->model_customer_custom_field->getValues((int)$cf['custom_field_id']);
 				foreach ($cfValues as $cfVal) {
 					$requirementData['values'][$cfKey][$cfVal['custom_field_value_id']] = htmlspecialchars($cfVal['name'], ENT_QUOTES, 'UTF-8');
 				}
@@ -806,12 +808,14 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 		$rateTypes['other'] = [];
 		$this->load->model('setting/extension');
-		$shippingMethods = $this->model_setting_extension->getExtensions('shipping');
+		// OpenCart 4: getExtensions() takes no type; use getExtensionsByType()
+		$shippingMethods = $this->model_setting_extension->getExtensionsByType('shipping');
 
 		foreach ($shippingMethods as $sm) {
 			$code = $sm['code'] ?? '';
+			$ext  = $sm['extension'] ?? 'opencart';
 			if ($code !== '' && $code !== $this->extension && $code !== 'ocapps') {
-				$this->load->language('extension/shipping/' . $code);
+				$this->load->language('extension/' . $ext . '/shipping/' . $code);
 				$rateTypes['other'][$code] = strip_tags($this->language->get('heading_title'));
 			}
 		}
