@@ -16,10 +16,10 @@
       <div class="row">
         <h2 class="pull-left" style="margin: 0; line-height: 40px; font-weight: bold; color: #2563eb;">ADVANCED <span style="color: #0f172a;">SHIPPING</span></h2>
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a role="button" class="btn btn-default" href="#tab-rates" data-bs-toggle="tab" data-bs-target="#tab-rates">{{ text.tab_rate }}</a></li>
-          <li><a role="button" class="btn btn-default" href="#tab-combinations" data-bs-toggle="tab" data-bs-target="#tab-combinations">{{ text.tab_combination }}</a></li>
-          <li><a role="button" class="btn btn-default" href="#tab-settings" data-bs-toggle="tab" data-bs-target="#tab-settings">{{ text.tab_settings }}</a></li>
-          <li><a role="button" class="btn btn-default" href="#tab-support" data-bs-toggle="tab" data-bs-target="#tab-support">{{ text.tab_support }}</a></li>
+          <li class="active"><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-rates">{{ text.tab_rate }}</a></li>
+          <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-combinations">{{ text.tab_combination }}</a></li>
+          <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-settings">{{ text.tab_settings }}</a></li>
+          <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-support">{{ text.tab_support }}</a></li>
           <li><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalInfo"><i class="fa fa-question-circle"></i></button></li>
         </ul>
       </div>
@@ -491,7 +491,10 @@
 
 <script type="text/javascript"><!--
 	function autosave(field_name) {
-    var field_array = 'input[name=\''+ field_name +'\'], select[name=\''+ field_name +'\'], textarea[name=\''+ field_name +'\']';
+    var field_array = '';
+    if (field_name) {
+      field_array = 'input[name=\''+ field_name +'\'], select[name=\''+ field_name +'\'], textarea[name=\''+ field_name +'\']';
+    }
 
     $.ajax({
 			url: 'index.php?route=extension/advancedshipping/shipping/advancedshipping.autosave&user_token={{ user_token }}',
@@ -499,24 +502,26 @@
 			type: 'post',
 			dataType: 'json',
 			beforeSend: function() {
-				$(field_array).parent().removeClass('has-error').addClass('has-warning');
+				if (field_array) { $(field_array).parent().removeClass('has-error').addClass('has-warning'); }
 			},
 			complete: function() {
-				$(field_array).parent().removeClass('has-warning');
+				if (field_array) { $(field_array).parent().removeClass('has-warning'); }
 			},
 			success: function(json) {
 				$('.alert-success, .alert-warning, .alert-attention, .alert-danger, .alert-info').remove();
 
 				if (json['error']) {
-					$(field_array).parent().addClass('has-error');
+					if (field_array) { $(field_array).parent().addClass('has-error'); }
 					if (typeof json['error'] === 'object') {
 						$.each(json['error'], function(key, value) {
 							$('#error-'+ key.replace(/_/g, '-')).html(value).show();
 						});
 					}
 				} else {
-					$(field_array).parent().addClass('has-success');
-					setTimeout(function() { $(field_array).parent().removeClass('has-success'); }, 3000);
+					if (field_array) {
+						$(field_array).parent().addClass('has-success');
+						setTimeout(function() { $(field_array).parent().removeClass('has-success'); }, 3000);
+					}
 					$('.rate-error').hide();
 				}
 			}

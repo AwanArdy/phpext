@@ -177,6 +177,9 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 			}
 		}
 
+		// combination_row tracks the next available row index for JS addCombination()
+		$data['combination_row'] = !empty($data['combinations']) ? (max(array_keys($data['combinations'])) + 1) : 1;
+
 		$this->load->model('localisation/language');
 		$data['languages'] = $this->model_localisation_language->getLanguages();
 		$data['ocapps_integration'] = $this->ocappsStatus;
