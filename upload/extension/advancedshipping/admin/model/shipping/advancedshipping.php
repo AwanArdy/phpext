@@ -137,22 +137,23 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 		$sql = "SELECT * FROM `" . DB_PREFIX . $this->dbTable . "`";
 
 		if (!empty($filter)) {
-			$x = 1;
+			$conditions = [];
 			foreach (['filter_description', 'filter_name', 'filter_status', 'filter_group'] as $key) {
 				if (isset($filter[$key]) && ($filter[$key] !== '' || $filter[$key] === '0')) {
-					$sql .= ($x > 1) ? " AND" : " WHERE";
 					if ($key === 'filter_description') {
-						$sql .= " LOWER(`description`) LIKE '%" . $this->db->escape(mb_strtolower((string)$filter[$key])) . "%'";
+						$conditions[] = " LOWER(`description`) LIKE '%" . $this->db->escape(mb_strtolower((string)$filter[$key])) . "%'";
 					} elseif ($key === 'filter_name') {
-						$sql .= " LOWER(`name`) LIKE '%" . $this->db->escape(mb_strtolower((string)$filter[$key])) . "%'";
+						$conditions[] = " LOWER(`name`) LIKE '%" . $this->db->escape(mb_strtolower((string)$filter[$key])) . "%'";
 					} elseif ($key === 'filter_status') {
-						$sql .= " `status` = '" . (int)$filter[$key] . "'";
+						$conditions[] = " `status` = '" . (int)$filter[$key] . "'";
 					} else {
 						$field = str_replace('filter_', '', $key);
-						$sql .= " LOWER(`" . $field . "`) = '" . $this->db->escape(mb_strtolower((string)$filter[$key])) . "'";
+						$conditions[] = " LOWER(`" . $field . "`) = '" . $this->db->escape(mb_strtolower((string)$filter[$key])) . "'";
 					}
-					$x++;
 				}
+			}
+			if ($conditions) {
+				$sql .= " WHERE" . implode(" AND", $conditions);
 			}
 		}
 

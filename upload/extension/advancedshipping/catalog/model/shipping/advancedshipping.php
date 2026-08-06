@@ -99,10 +99,11 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 			return [];
 		}
 
-		if ($this->status && !empty($this->field('status')) && $this->rates() && $this->cartProducts && $address) {
+		$rates = $this->rates();
+
+		if ($this->status && !empty($this->field('status')) && $rates && $this->cartProducts && $address) {
 			$languageCode = $this->session->data['language'] ?? $this->config->get('config_language') ?? 'en-gb';
 			$destination  = $this->getDestination($address);
-			$rates        = $this->rates();
 
 			$quote_data   = [];
 			$method_data  = [];
@@ -508,7 +509,8 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 					$combine_status = true;
 
 					if ($formula !== '' && substr_count($formula, '(') === substr_count($formula, ')') && substr_count($formula, '{') === substr_count($formula, '}')) {
-						while (preg_match('/([SUM|AVG|MIN|MAX])\(([A-Z0-9\,\.\{\}]+)\)/', $formula) && $combine_status) {
+						while ($combine_status && preg_match('/(SUM|AVG|MIN|MAX)\(([A-Z0-9\,\.\{\}]+)\)/', $formula)) {
+							$before = $formula;
 							foreach ($combine_regex as $regex_key => $regex_value) {
 								preg_match($regex_value, $formula, $matches);
 								$x = 1;
@@ -575,25 +577,32 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 									break;
 								}
 							}
+							// Guard against malformed formulas (e.g. SUM({A}{B})) that never resolve
+							if ($formula === $before) {
+								$combine_status = false;
+							}
 						}
 					}
 
 					if (preg_match('/^([0-9\,\.\+\-\*\/\(\)]+)$/', $formula) && substr_count($formula, '(') === substr_count($formula, ')')) {
-						try {
-							$evalRes = @eval('return(' . $formula . ');');
-							if ($evalRes !== false && is_numeric($evalRes)) {
-								$cost = (float)$evalRes;
-								$rate_data = [
-									'title'        => $title,
-									'sort_order'   => (int)($value['sort_order'] ?? 0),
-									'tax_class_id' => $tax_class_id,
-									'cost'         => $cost,
-									'code'         => 'C' . $combination_row,
-								];
-								$quote_data[$this->extension . '_C' . $combination_row] = $this->getQuoteData($rate_data);
+						// Guard: reject any /0 pattern to prevent DivisionByZeroError
+						if (!preg_match('/\/\s*0(?:[^.]|$)/', $formula)) {
+							try {
+								$evalRes = @eval('return(' . $formula . ');');
+								if ($evalRes !== false && is_numeric($evalRes)) {
+									$cost = (float)$evalRes;
+									$rate_data = [
+										'title'        => $title,
+										'sort_order'   => (int)($value['sort_order'] ?? 0),
+										'tax_class_id' => $tax_class_id,
+										'cost'         => $cost,
+										'code'         => 'C' . $combination_row,
+									];
+									$quote_data[$this->extension . '_C' . $combination_row] = $this->getQuoteData($rate_data);
+								}
+							} catch (\Throwable $e) {
+								// Ignore mathematical eval errors
 							}
-						} catch (\Throwable $e) {
-							// Ignore mathematical eval errors
 						}
 					}
 					$combination_row++;
@@ -905,6 +914,10 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 		];
 
 		if ($products) {
+			// Total = Sub-Total + Tax + any other OC totals (coupon, voucher, reward, etc.)
+			// cart->getTotal() sums all total-extension rows (subtotal, tax, coupon, voucher, etc.)
+			$grandTotal = ($total_type === 2) ? (float)$this->cart->getTotal() : 0.0;
+
 			foreach ($products as $product) {
 				$qty = (int)$product['quantity'];
 				$adjQty = $adjusted_values['product_quantity'] ?? null;
@@ -929,6 +942,9 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 					$cart['total'] += $unitPrice * $qty;
 				} elseif ($total_type === 1) {
 					$cart['total'] += (float)$this->tax->calculate($unitPrice, (int)$product['tax_class_id'], (bool)$this->config->get('config_tax')) * $qty;
+				} elseif ($total_type === 2) {
+					// Full cart total already computed once before the loop
+					$cart['total'] = $grandTotal;
 				}
 
 				$weight = (float)$product['weight'];
@@ -1125,14 +1141,17 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 		return $status;
 	}
 
-	private function checkRequirementOther(array $other, string $group, string $type, string $operation, mixed $value, array $parameter): bool {
+	private function checkRequirementOther(array $other, string $group, string $type, string $operation, mixed $value, array $parameter, array &$debug): bool {
 		$type   = str_replace($group . '_', '', $type);
 		$values = is_array($value) ? $value : explode(',', (string)$value);
 		$otherVal = trim((string)($other[$type] ?? ''));
 		$status = false;
 
 		if ($type === 'day') {
-			if (in_array($otherVal, $values, true) && $operation === 'eq') {
+			if ($operation === 'eq' && in_array($otherVal, $values, true)) {
+				$status = true;
+			}
+			if ($operation === 'neq' && !in_array($otherVal, $values, true)) {
 				$status = true;
 			}
 		} else {

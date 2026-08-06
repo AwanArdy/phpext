@@ -16,11 +16,11 @@
       <div class="row">
         <h2 class="pull-left" style="margin: 0; line-height: 40px; font-weight: bold; color: #2563eb;">ADVANCED <span style="color: #0f172a;">SHIPPING</span></h2>
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a role="button" class="btn btn-default" href="#tab-rates" data-toggle="tab">{{ text.tab_rate }}</a></li>
-          <li><a role="button" class="btn btn-default" href="#tab-combinations" data-toggle="tab">{{ text.tab_combination }}</a></li>
-          <li><a role="button" class="btn btn-default" href="#tab-settings" data-toggle="tab">{{ text.tab_settings }}</a></li>
-          <li><a role="button" class="btn btn-default" href="#tab-support" data-toggle="tab">{{ text.tab_support }}</a></li>
-          <li><button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalInfo"><i class="fa fa-question-circle"></i></button></li>
+          <li class="active"><a role="button" class="btn btn-default" href="#tab-rates" data-bs-toggle="tab" data-bs-target="#tab-rates">{{ text.tab_rate }}</a></li>
+          <li><a role="button" class="btn btn-default" href="#tab-combinations" data-bs-toggle="tab" data-bs-target="#tab-combinations">{{ text.tab_combination }}</a></li>
+          <li><a role="button" class="btn btn-default" href="#tab-settings" data-bs-toggle="tab" data-bs-target="#tab-settings">{{ text.tab_settings }}</a></li>
+          <li><a role="button" class="btn btn-default" href="#tab-support" data-bs-toggle="tab" data-bs-target="#tab-support">{{ text.tab_support }}</a></li>
+          <li><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalInfo"><i class="fa fa-question-circle"></i></button></li>
         </ul>
       </div>
     </div>
@@ -31,10 +31,10 @@
     <div id="is-content" class="container">
 
       <div id="notification" class="row">
-        {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
-        {% if error %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
-        {% if not status %}<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> {{ text.text_notification_status }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
-        {% if test %}<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text.text_notification_test }} <button type="button" class="close" data-dismiss="alert">&times;</button></div>{% endif %}
+        {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
+        {% if error %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
+        {% if not status %}<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> {{ text.text_notification_status }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
+        {% if test %}<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text.text_notification_test }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
       </div>
 
       <div class="tab-content">
@@ -91,8 +91,8 @@
                       <td class="text-right" colspan="6">
                         <div class="pull-right">
                           <div class="btn-group">
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImport">{{ text.button_import }}</button>
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalExport">{{ text.button_export }}</button>
+                            <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#modalImport">{{ text.button_import }}</button>
+                            <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#modalExport">{{ text.button_export }}</button>
                           </div>
                           <a class="btn btn-oca" href="{{ action_add }}">{{ text.button_add }}</a>
                         </div>
@@ -188,7 +188,7 @@
             <div class="box">
               <div class="form-horizontal">
                 <div class="form-group">
-                  <label class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_status }}">{{ text.entry_status }}</span></label>
+                  <label class="col-md-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_status }}">{{ text.entry_status }}</span></label>
                   <div class="col-md-9">
                     <input type="hidden" name="status" value="{{ status }}" class="save" />
                     <div class="btn-group toggle" role="group">
@@ -203,7 +203,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_test }}">{{ text.entry_test }}</span></label>
+                  <label class="col-md-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_test }}">{{ text.entry_test }}</span></label>
                   <div class="col-md-9">
                     <input type="hidden" name="test" value="{{ test }}" class="save" />
                     <div class="btn-group toggle" role="group">
@@ -218,7 +218,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_title }}">{{ text.entry_title }}</span></label>
+                  <label class="col-sm-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_title }}">{{ text.entry_title }}</span></label>
                   <div class="col-sm-9">
                     {% for lang in languages %}
                       <div class="input-group">
@@ -229,19 +229,19 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_gmaps_api_key }}">{{ text.entry_gmaps_api_key }}</span></label>
+                  <label class="col-sm-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_gmaps_api_key }}">{{ text.entry_gmaps_api_key }}</span></label>
                   <div class="col-sm-9">
                     <input type="text" name="gmaps_api_key" id="gmaps-api-key" class="form-control save" value="{{ gmaps_api_key }}" placeholder="{{ text.placeholder_gmaps_api_key }}" />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_sort_order }}">{{ text.entry_sort_order }}</span></label>
+                  <label class="col-sm-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_sort_order }}">{{ text.entry_sort_order }}</span></label>
                   <div class="col-sm-9">
                     <input type="text" name="sort_order" id="sort-order" class="form-control save" value="{{ sort_order }}" />
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-sm-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_sort_quotes }}">{{ text.entry_sort_quotes }}</span></label>
+                  <label class="col-sm-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_sort_quotes }}">{{ text.entry_sort_quotes }}</span></label>
                   <div class="col-sm-9">
                     <select name="sort_quotes" id="sort-quotes" class="form-control save">
                       {% for param_key, param in option_sort_quote %}
@@ -262,7 +262,7 @@
             <div class="box">
               <div class="form-horizontal">
                 <div class="form-group">
-                  <label class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_debug }}">{{ text.entry_debug }}</span></label>
+                  <label class="col-md-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_debug }}">{{ text.entry_debug }}</span></label>
                   <div class="col-md-9">
                     <input type="hidden" name="debug" value="{{ debug }}" class="save" />
                     <div class="btn-group toggle" role="group">
@@ -274,11 +274,11 @@
                       <button type="button" data-setting="debug" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
                       {% endif %}
                     </div>
-                    <a role="button" class="btn btn-default" data-toggle="modal" data-target="#modalDebug" onclick="reloadDebug();">{{ text.button_debug_view }}</a>
+                    <a role="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#modalDebug" onclick="reloadDebug();">{{ text.button_debug_view }}</a>
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_cache }}">{{ text.entry_cache }}</span></label>
+                  <label class="col-md-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_cache }}">{{ text.entry_cache }}</span></label>
                   <div class="col-md-9">
                     <input type="hidden" name="cache" value="{{ cache }}" class="save" />
                     <div class="btn-group toggle" role="group">
@@ -294,7 +294,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label class="col-md-3 control-label"><span data-toggle="tooltip" data-placement="bottom" title="{{ text.tooltip_backup }}">{{ text.entry_backup }}</span></label>
+                  <label class="col-md-3 control-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_backup }}">{{ text.entry_backup }}</span></label>
                   <div class="col-md-9">
                     <input type="hidden" name="backup" value="{{ backup }}" class="save" />
                     <div class="btn-group toggle" role="group">
@@ -306,7 +306,7 @@
                       <button type="button" data-setting="backup" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
                       {% endif %}
                     </div>
-                    <a role="button" class="btn btn-default" data-toggle="modal" data-target="#modalBackup">{{ text.button_backup_view }}</a>
+                    <a role="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#modalBackup">{{ text.button_backup_view }}</a>
                   </div>
                 </div>
               </div>
@@ -375,14 +375,14 @@
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ text.modal_info_header }}</h4>
 			</div>
 			<div class="modal-body">
 				{{ text.modal_info_body }}
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-link" data-bs-dismiss="modal">{{ text.button_close }}</button>
 			</div>
 		</div>
 	</div>
@@ -392,7 +392,7 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ text.modal_debug_header }}</h4>
 			</div>
 			<div class="modal-body">
@@ -400,7 +400,7 @@
 				<textarea wrap="off" readonly="readonly" id="debug-log" class="form-control" style="height: 350px;">{{ debug_log }}</textarea>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-link" data-bs-dismiss="modal">{{ text.button_close }}</button>
 				<button type="button" class="btn btn-danger" onclick="clearDebug();">{{ text.button_debug_clear }}</button>
 				<a class="btn btn-default" href="{{ debug_download }}" target="_blank">{{ text.button_debug_download }}</a>
 				<button type="button" class="btn btn-default" onclick="reloadDebug();">{{ text.button_debug_reload }}</button>
@@ -413,7 +413,7 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ text.modal_backup_header }}</h4>
 			</div>
 			<div class="modal-body">
@@ -441,7 +441,7 @@
         </table>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-link" data-bs-dismiss="modal">{{ text.button_close }}</button>
 				<button type="button" class="btn btn-danger" onclick="if (confirm('{{ text.warning_backup_delete }}')) { window.location.replace('{{ backup_clear_all }}'); }">{{ text.button_backup_clear_all }}</button>
 			</div>
 		</div>
@@ -452,7 +452,7 @@
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ text.modal_import_header }}</h4>
 			</div>
 			<div class="modal-body">
@@ -464,7 +464,7 @@
 				{{ text.modal_import_body }}
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-link" data-bs-dismiss="modal">{{ text.button_close }}</button>
 				<button type="button" class="btn btn-default" onclick="$('#import').submit();">{{ text.button_import }}</button>
 			</div>
 		</div>
@@ -475,14 +475,14 @@
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ text.modal_export_header }}</h4>
 			</div>
 			<div class="modal-body">
 				{{ text.modal_export_body }}
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-link" data-dismiss="modal">{{ text.button_close }}</button>
+				<button type="button" class="btn btn-link" data-bs-dismiss="modal">{{ text.button_close }}</button>
 				<a class="btn btn-default" href="{{ action_export }}" target="_blank">{{ text.button_export }}</a>
 			</div>
 		</div>
@@ -495,7 +495,7 @@
 
     $.ajax({
 			url: 'index.php?route=extension/advancedshipping/shipping/advancedshipping.autosave&user_token={{ user_token }}',
-			data: $('.save'),
+			data: $('.save').serialize(),
 			type: 'post',
 			dataType: 'json',
 			beforeSend: function() {
@@ -569,7 +569,7 @@
 			success: function(json) {
 				$('.alert-success, .alert-danger').remove();
 				if (json['success']) {
-					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
 					$('#debug-log').val('');
 				}
 			}
@@ -586,10 +586,10 @@
 			success: function(json) {
 				$('.alert-success, .alert-danger').remove();
 				if (json['error']) {
-					$('#modalDebug .modal-body').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> '+ json['error'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> '+ json['error'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
 				}
 				if (json['success']) {
-					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
 					$('#debug-log').val(json['debug_log']);
 				}
 			}
@@ -606,7 +606,7 @@
 			success: function(json) {
 				$('.alert-success, .alert-danger').remove();
 				if (json['success']) {
-					$('#notification').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+					$('#notification').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
 				}
 			}
 		});
@@ -647,11 +647,17 @@
   var tooltip_status = true;
   function tooltips() {
     if (tooltip_status) {
-      $('[data-toggle="tooltip"]').tooltip({'trigger': 'hover'}).tooltip('enable');
-      $('[rel="tooltip"]').tooltip({'trigger': 'hover'}).tooltip('enable');
+      var tooltipEls = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipEls.forEach(function(el) {
+        var existing = bootstrap.Tooltip.getInstance(el);
+        if (!existing) { new bootstrap.Tooltip(el, { trigger: 'hover' }); }
+      });
     } else {
-      $('[data-toggle="tooltip"]').tooltip('disable');
-      $('[rel="tooltip"]').tooltip('disable');
+      var tooltipEls = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipEls.forEach(function(el) {
+        var instance = bootstrap.Tooltip.getInstance(el);
+        if (instance) { instance.disable(); }
+      });
     }
   }
 //--></script>
@@ -668,7 +674,7 @@
   function filter() {
     $.ajax({
       url: 'index.php?route=extension/advancedshipping/shipping/advancedshipping.filter&user_token={{ user_token }}',
-      data: $('.filter'),
+      data: $('.filter').serialize(),
       type: 'post',
       dataType: 'json',
       success: function(json) {
@@ -701,7 +707,7 @@
   $('#supportSubmit').bind('click', function() {
     $.ajax({
       url: 'index.php?route=extension/advancedshipping/shipping/advancedshipping.support&user_token={{ user_token }}',
-      data: $('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea'),
+      data: $('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea').serialize(),
       type: 'post',
       dataType: 'json',
       beforeSend: function() {

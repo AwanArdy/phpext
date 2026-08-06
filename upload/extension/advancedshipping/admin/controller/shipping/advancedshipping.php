@@ -120,6 +120,8 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 			$x = 0;
 			$data['option_' . $option] = [];
 			while (isset($data['text'][$option . '_' . $x])) {
+				// Populate both prefixed (used by templates) and plain keys for BC
+				$data['option_' . $option][$x] = $data['text'][$option . '_' . $x];
 				$data[$option][$x] = $data['text'][$option . '_' . $x];
 				$x++;
 			}
@@ -201,19 +203,22 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 				$data = [];
 				$settingCode = 'shipping_' . $this->extension;
+				$errors = [];
 
 				foreach ($this->request->post as $key => $value) {
 					$settingKey = 'shipping_' . $this->extension . '_' . $key;
 					$data[$settingKey] = is_array($value) ? json_encode($value) : $value;
 
-					$errors = $this->validateSetting($key, $value);
-					if (!$errors) {
-						$this->model_setting_setting->editSetting($settingCode, $data);
-					} else {
-						foreach ($errors as $errKey => $errVal) {
-							$json['error'][$errKey] = $errVal;
-						}
+					$fieldErrors = $this->validateSetting($key, $value);
+					foreach ($fieldErrors as $errKey => $errVal) {
+						$errors[$errKey] = $errVal;
+						$json['error'][$errKey] = $errVal;
 					}
+				}
+
+				// Save all settings in a single query only if no validation errors
+				if (empty($errors)) {
+					$this->model_setting_setting->editSetting($settingCode, $data);
 				}
 			} else {
 				$json['error'] = true;
@@ -340,7 +345,9 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 			$x = 0;
 			$data[$option] = [];
 			while (isset($data['text'][$option . '_' . $x])) {
+				// Populate both plain and option_ prefixed keys (templates use option_* for ocapps)
 				$data[$option][$x] = $data['text'][$option . '_' . $x];
+				$data['option_' . $option][$x] = $data['text'][$option . '_' . $x];
 				$x++;
 			}
 		}
@@ -507,8 +514,8 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 			$requirementData['requirement_types'] = [];
 			$reqTypes = [
-				'cart'                   => ['quantity', 'total', 'weight', 'volume', 'distance', 'length', 'width', 'height'],
-				'product'                => ['quantity', 'total', 'weight', 'volume', 'length', 'width', 'height', 'name', 'model', 'sku', 'upc', 'ean', 'jan', 'isbn', 'mpn', 'location', 'stock', 'category', 'manufacturer'],
+				'cart'                   => ['quantity', 'total', 'weight', 'dim_weight', 'volume', 'distance', 'length', 'width', 'height'],
+				'product'                => ['quantity', 'total', 'weight', 'dim_weight', 'volume', 'length', 'width', 'height', 'name', 'model', 'sku', 'upc', 'ean', 'jan', 'isbn', 'mpn', 'location', 'stock', 'category', 'manufacturer'],
 				'product_option'         => [],
 				'product_attribute'      => [],
 				'customer'               => ['store', 'group', 'name', 'email', 'telephone', 'fax', 'company', 'address', 'city', 'postcode'],
@@ -1133,9 +1140,11 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 	public function restoreBackup(): void {
 		$this->validate();
-		$file = !empty($this->request->get['file']) ? (string)$this->request->get['file'] : null;
+		// basename() prevents path traversal (e.g. ../../config.php via GET param)
+		$file = !empty($this->request->get['file']) ? basename((string)$this->request->get['file']) : null;
 
-		if ($file && file_exists(DIR_LOGS . $file)) {
+		// Only allow files that belong to this extension
+		if ($file && str_starts_with($file, $this->extension . '_backup_') && file_exists(DIR_LOGS . $file)) {
 			$this->writeBackup('Backup Created Prior To Restore');
 			$this->load->model('extension/advancedshipping/shipping/advancedshipping');
 			$this->model_extension_advancedshipping_shipping_advancedshipping->deleteAllRates();
@@ -1145,8 +1154,11 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 	public function clearBackup(): void {
 		$this->validate();
-		$file = !empty($this->request->get['file']) ? (string)$this->request->get['file'] : null;
-		if ($file && file_exists(DIR_LOGS . $file)) {
+		// basename() prevents path traversal
+		$file = !empty($this->request->get['file']) ? basename((string)$this->request->get['file']) : null;
+
+		// Only allow files that belong to this extension
+		if ($file && str_starts_with($file, $this->extension . '_backup_') && file_exists(DIR_LOGS . $file)) {
 			unlink(DIR_LOGS . $file);
 		}
 
@@ -1258,7 +1270,8 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 				$combine_status = true;
 				if ($formula !== '') {
 					if (substr_count($formula, '(') === substr_count($formula, ')') && substr_count($formula, '{') === substr_count($formula, '}')) {
-						while (preg_match('/([SUM|AVG|MIN|MAX])\(([A-Z0-9\,\.\{\}]+)\)/', $formula) && $combine_status) {
+						while ($combine_status && preg_match('/(SUM|AVG|MIN|MAX)\(([A-Z0-9\,\.\{\}]+)\)/', $formula)) {
+							$before = $formula;
 							foreach ($combineRegex as $regex_key => $regex_value) {
 								preg_match($regex_value, $formula, $matches);
 								$x = 1;
@@ -1291,6 +1304,10 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 									}
 									$x++;
 								}
+							}
+							// Guard against malformed formulas (e.g. SUM({A}{B})) that never resolve
+							if ($formula === $before) {
+								$combine_status = false;
 							}
 						}
 						if (!preg_match('/^([0-9\,\.\+\-\*\/\(\)]+)$/', $formula) || substr_count($formula, '(') !== substr_count($formula, ')')) {

@@ -13,6 +13,7 @@
 - [Fitur](#-fitur)
 - [Persyaratan Sistem](#-persyaratan-sistem)
 - [Instalasi](#-instalasi)
+- [Uji Coba dengan Docker (Step by Step)](#-uji-coba-dengan-docker-step-by-step)
 - [Konfigurasi](#-konfigurasi)
   - [Pengaturan Umum](#1-pengaturan-umum)
   - [Google Maps API Key](#2-google-maps-api-key)
@@ -128,10 +129,141 @@
 docker compose up -d --build
 ```
 
-Ekstensi di-mount ke `extension/advancedshipping/` dan **otomatis didaftarkan** ke database saat container start. Setelah itu:
+Ekstensi di-mount ke `extension/advancedshipping/` dan **otomatis didaftarkan** ke database saat container start.
 
-1. Admin → **Extensions → Extensions → Shipping**
-2. Install **Advanced Shipping** → Edit
+> 📖 Lihat panduan lengkap di bagian [Uji Coba dengan Docker](#-uji-coba-dengan-docker-step-by-step).
+
+---
+
+## 🐳 Uji Coba dengan Docker (Step by Step)
+
+Repo ini menyediakan environment Docker lengkap: **OpenCart 4 + MariaDB + phpMyAdmin**, dengan ekstensi Advanced Shipping yang sudah di-mount dan **otomatis terdaftar** ke database saat container pertama kali start.
+
+> ⚠️ Pastikan file yang Anda edit ada di folder `upload/extension/advancedshipping/` — folder ini di-mount langsung ke container, sehingga **perubahan kode langsung terlihat** tanpa rebuild image.
+
+### Langkah 0: Prasyarat
+
+- Docker & Docker Compose terinstal (`docker --version`, `docker compose version`)
+- Port berikut bebas: **8080** (toko), **8081** (phpMyAdmin), **3307** (MySQL)
+
+### Langkah 1: Jalankan Container
+
+```bash
+docker compose up -d --build
+```
+
+Perintah ini akan:
+1. Build image OpenCart 4.0.2.3 + PHP 8.2
+2. Menunggu MariaDB siap (healthcheck otomatis)
+3. Menginstal OpenCart via CLI (hanya saat pertama kali, ditandai file `.installed`)
+4. **Mendaftarkan Advanced Shipping** ke tabel `extension_install` & `extension_path` (lewat `docker-entrypoint.sh`)
+
+Pantau log sampai muncul `✅ Advanced Shipping terdaftar.`:
+
+```bash
+docker compose logs -f opencart
+```
+
+### Langkah 2: Akses Store & Admin
+
+| Service    | URL                        |
+|------------|----------------------------|
+| Toko       | http://localhost:8080      |
+| Admin      | http://localhost:8080/admin |
+| phpMyAdmin | http://localhost:8081      |
+
+**Kredensial default:**
+
+| Akun    | Username | Password  |
+|---------|----------|-----------|
+| Admin   | `admin`  | `admin123`|
+| MySQL   | `opencart` | `opencart123` |
+
+### Langkah 3: Aktifkan Ekstensi di Admin
+
+1. Login ke **http://localhost:8080/admin** (`admin` / `admin123`)
+2. Buka **Extensions → Extensions**
+3. Pilih tipe **Shipping** pada dropdown
+4. Cari **Advanced Shipping** → klik tombol **Install** (ikon ➕)
+5. Klik **Edit** untuk membuka halaman konfigurasi
+
+> Jika ekstensi tidak muncul di daftar Shipping: restart container (`docker compose restart opencart`) — entrypoint akan mendaftarkan ulang semua path.
+
+### Langkah 4: Siapkan Produk & Kredensial Pengiriman (opsional)
+
+Untuk pengujian checkout dibutuhkan minimal 1 produk:
+
+1. **Catalog → Products → Add New**
+2. Isi nama produk & harga
+3. **Data tab** → isi **Weight** (misal `1.0`) dan pilih **Weight Class**
+4. **Links tab** → centang category **Default** agar muncul di toko
+
+### Langkah 5: Buat Shipping Rate Pertama
+
+1. Buka **Extensions → Extensions → Shipping → Advanced Shipping → Edit**
+2. Pastikan **Status** di tab **Settings** = **On** (hijau)
+3. Buka tab **Shipping Rates** → klik **Add Shipping Rate**
+4. Isi konfigurasi minimal:
+   - **Description**: `Tes Ongkir Berat`
+   - **Status**: On
+   - **Rate Type**: `Cart Weight`
+   - **Shipping Costs**:
+     | Max (kg) | Cost | Per |
+     |----------|------|-----|
+     | 1        | 10000 | -  |
+     | 5        | 25000 | -  |
+     | ~        | 5000  | 1  |
+5. Klik **Save**
+
+### Langkah 6: Uji Coba Checkout
+
+1. Buka toko **http://localhost:8080**
+2. Tambahkan produk ke keranjang → **Checkout**
+3. Pilih **Register Account** atau **Guest Checkout**, isi alamat pengiriman
+4. Di langkah shipping, pastikan **Advanced Shipping** muncul dengan ongkir sesuai tabel rate
+5. Jika memakai **Testing Mode**: set nama pelanggan menjadi **Advanced Shipping** (mode ini menonaktifkan rate untuk semua nama lain)
+
+> **Tips:** Fitur **Cart Distance** membutuhkan **Google Maps API Key** (lihat bagian [Konfigurasi](#-konfigurasi)). Tanpa API Key, gunakan rate berbasis berat/kuantitas/volume.
+
+### Langkah 7: Cek Debug Log
+
+Jika rate tidak muncul atau ongkir salah:
+
+1. **Admin → Advanced Shipping → Edit → Settings** → aktifkan **Debug**
+2. Ulangi langkah checkout
+3. Klik **View Debug Log** untuk melihat detail kalkulasi tiap rate
+4. Atau cek langsung dari terminal:
+   ```bash
+   docker compose exec opencart cat /var/www/html/system/storage/logs/advancedshipping.txt
+   ```
+
+### Langkah 8: Menghentikan & Mereset Environment
+
+```bash
+# Hentikan container (data tetap tersimpan di volume)
+docker compose down
+
+# Jalankan lagi (instalasi tidak diulang — ada file .installed)
+docker compose up -d
+
+# Reset penuh: hapus database & storage (semua data hilang)
+docker compose down -v
+docker compose up -d --build
+
+# Buka shell di dalam container
+docker compose exec opencart bash
+```
+
+### Troubleshooting
+
+| Masalah                                        | Solusi                                                                 |
+|------------------------------------------------|------------------------------------------------------------------------|
+| Port 8080/8081 sudah terpakai                  | Ubah mapping port di `docker-compose.yml` lalu `docker compose up -d`   |
+| Ekstensi tidak muncul di daftar Shipping       | `docker compose restart opencart` untuk mendaftarkan ulang              |
+| Perubahan kode tidak kelihatan                 | Refresh browser (cache) — file di-mount langsung, tidak perlu rebuild   |
+| Perubahan PHP tidak kelihatan di admin         | Hapus cache di **Settings → Cache → Clear Cache**, atau hapus file di `system/storage/cache/` |
+| MySQL koneksi error saat instalasi             | Pastikan `depends_on` healthcheck selesai: `docker compose logs -f db`  |
+| Ingin instalasi dari awal                     | `docker compose down -v` lalu `docker compose up -d --build`            |
 
 ---
 
