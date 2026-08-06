@@ -11,11 +11,11 @@
 
 <div id="content">
 
-  <div id="is-header">
+  <div id="as-header">
     <div class="container">
       <div class="row">
         <div class="col-md-6 text-left">
-          <a href="{{ action_close }}"><h2 style="margin: 0; line-height: 40px; font-weight: bold; color: #2563eb;">ADVANCED <span style="color: #0f172a;">SHIPPING</span></h2></a>
+          <a class="as-logo-link" href="{{ action_close }}"><h2 class="as-logo">ADVANCED <span>SHIPPING</span> <span class="as-logo-version">{{ version }}</span></h2></a>
         </div>
         <div class="col-md-6 text-right">
           <a class="btn btn-link" href="{{ action_close }}">{{ text.button_close }}</a>
@@ -30,8 +30,8 @@
     </div>
   </div>
 
-  <div id="is-wrap">
-    <div id="is-content" class="container">
+  <div id="as-wrap">
+    <div id="as-content" class="container">
 
       <div id="notification" class="row">
         {% if success %} <div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
@@ -254,7 +254,7 @@
                 <div class="text-center">
                   <a role="button" class="btn btn-link" onclick="toggleAdvancedOptions({{ geo_zone_id }});">{{ text.button_advanced_options }}</a>
                 </div>
-                <div id="advanced-options-{{ geo_zone_id }}" class="bg-info" style="display: none;">
+                <div id="advanced-options-{{ geo_zone_id }}" class="as-options" style="display: none;">
                   <div class="form-group">
                     <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-final-cost"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_final_cost }}">{{ text.entry_final_cost }}</span></label>
                     <div class="col-md-9">
@@ -289,10 +289,10 @@
                   </div>
                   <div class="form-group">
                     <label class="control-label col-md-3"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_cost }}">{{ text.entry_cost }}</span></label>
-                    <div class="col-md-9 form-inline">
-                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][min]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.min ? data.shipping[geo_zone_id].cost.min : '' }}" placeholder="{{ text.placeholder_cost_min }}" style="width: 32%;" />
-                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][max]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.max ? data.shipping[geo_zone_id].cost.max : '' }}" placeholder="{{ text.placeholder_cost_max }}" style="width: 32%;" />
-                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][add]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.add ? data.shipping[geo_zone_id].cost.add : '' }}" placeholder="{{ text.placeholder_cost_add }}" style="width: 32%;" />
+                    <div class="col-md-9 form-inline as-cost-adjust">
+                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][min]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.min ? data.shipping[geo_zone_id].cost.min : '' }}" placeholder="{{ text.placeholder_cost_min }}" />
+                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][max]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.max ? data.shipping[geo_zone_id].cost.max : '' }}" placeholder="{{ text.placeholder_cost_max }}" />
+                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][add]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.add ? data.shipping[geo_zone_id].cost.add : '' }}" placeholder="{{ text.placeholder_cost_add }}" />
                     </div>
                   </div>
                   <div class="form-group">
@@ -342,7 +342,7 @@
                 </div>
               </div>
               {% if not ocapps_integration %}
-              <div class="bg-info text-center" style="padding: 20px;">{{ text.text_ocapps }}</div>
+              <div class="as-notice">{{ text.text_ocapps }}</div>
               {% endif %}
             </div>
           </div>
@@ -433,9 +433,9 @@
                           <td id="requirements-{{ key }}-value">
                             {% if values[value.type] %}
                               {% if value.type in value_types.checkbox %}
-                                <div class="well" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_checkbox }}">
+                                <div class="as-well" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ text['tooltip_'~value.type] ? text['tooltip_'~value.type] : text.tooltip_checkbox }}">
                                 {% for param_key, param in values[value.type] %}
-                                  <div class="is-checkbox"><input type="checkbox" name="requirements[{{ key }}][value][]" id="requirement-{{ key }}-{{ param_key }}" value="{{ param_key }}" {% if value.value and param_key in value.value %}checked="checked"{% endif %}><label for="requirement-{{ key }}-{{ param_key }}">{{ param }}</label></div>
+                                  <div class="as-checkbox"><input type="checkbox" name="requirements[{{ key }}][value][]" id="requirement-{{ key }}-{{ param_key }}" value="{{ param_key }}" {% if value.value and param_key in value.value %}checked="checked"{% endif %}><label for="requirement-{{ key }}-{{ param_key }}">{{ param }}</label></div>
                                 {% endfor %}
                                 </div>
                               {% else %}
@@ -486,7 +486,7 @@
                 </table>
               </div>
 			  <div class="text-center">
-                <div class="is-checkbox"><input type="checkbox" name="fail_method" id="fail-method" value="1" {% if data.fail_method %}checked="checked"{% endif %}><label for="fail-method">{{ text.entry_fail_method }}</label></div>
+                <div class="as-checkbox"><input type="checkbox" name="fail_method" id="fail-method" value="1" {% if data.fail_method %}checked="checked"{% endif %}><label for="fail-method">{{ text.entry_fail_method }}</label></div>
               </div>
             </div>
           </div>
@@ -508,7 +508,7 @@
   </div>
 </div>
 
-<div id="is-footer">
+<div id="as-footer">
   {{ text.text_footer }}
 </div>
 
@@ -694,12 +694,12 @@
 				var html = '';
 				if (json['values']) {
 					if (json['value_type'] == 'checkbox') {
-						html += '<div class="well"';
+						html += '<div class="as-well"';
 						if (json['value_tooltip']) { html += ' data-bs-toggle="tooltip" data-bs-placement="top" title="'+ json['value_tooltip'] +'"'; }
 						html += '>';
 						$.each(json['values'], function(id, name) {
 							var cleanId = id.trim();
-							html += '<div class="is-checkbox"><input type="checkbox" name="requirements['+ key +'][value][]" id="requirement-'+ key +'-'+ cleanId +'" value="'+ cleanId +'"><label for="requirement-'+ key +'-'+ cleanId +'">'+ name +'</label></div>';
+							html += '<div class="as-checkbox"><input type="checkbox" name="requirements['+ key +'][value][]" id="requirement-'+ key +'-'+ cleanId +'" value="'+ cleanId +'"><label for="requirement-'+ key +'-'+ cleanId +'">'+ name +'</label></div>';
 						});
 						html += '</div>';
 					} else {

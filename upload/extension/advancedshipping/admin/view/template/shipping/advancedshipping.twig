@@ -11,10 +11,10 @@
 
 <div id="content">
 
-  <div id="is-header">
+  <div id="as-header">
     <div class="container">
       <div class="row">
-        <h2 class="pull-left" style="margin: 0; line-height: 40px; font-weight: bold; color: #2563eb;">ADVANCED <span style="color: #0f172a;">SHIPPING</span></h2>
+        <h2 class="as-logo pull-left">ADVANCED <span>SHIPPING</span> <span class="as-logo-version">{{ version }}</span></h2>
         <ul class="nav nav-pills pull-right">
           <li class="active"><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-rates">{{ text.tab_rate }}</a></li>
           <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-combinations">{{ text.tab_combination }}</a></li>
@@ -26,9 +26,9 @@
     </div>
   </div>
 
-  <div id="is-wrap">
+  <div id="as-wrap">
 
-    <div id="is-content" class="container">
+    <div id="as-content" class="container">
 
       <div id="notification" class="row">
         {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
@@ -43,7 +43,7 @@
             <h2>{{ text.heading_rates }}</h2>
             <div class="box">
               <form id="rates" action="{{ action_delete }}" method="post">
-                <table class="table table-hover table-responsive">
+                <table class="as-rates table table-hover table-responsive">
                   <thead>
                     <tr>
                       <th class="text-left">&nbsp;</th>
@@ -54,7 +54,7 @@
                       <th class="text-right">&nbsp;</th>
                     </tr>
                     <tr id="filter">
-                      <th><div class="is-checkbox"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" id="select-rate-all" style="styled"><label for="select-rate-all">&nbsp;</label></div></th>
+                      <th><div class="as-checkbox"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" id="select-rate-all"><label for="select-rate-all">&nbsp;</label></div></th>
                       <th><input type="text" name="filter_description" value="" placeholder="{{ text.placeholder_filter_description }}" class="form-control filter" /></th>
                       <th><input type="text" name="filter_name" value="" placeholder="{{ text.placeholder_filter_name }}" class="form-control filter" /></th>
                       <th>
@@ -72,7 +72,7 @@
                     {% if rates %}
                       {% for rate in rates %}
                       <tr data-rate-edit="{{ rate.edit }}" id="rate{{ rate.rate_id }}">
-                        <td class="text-left"><div class="is-checkbox"><input type="checkbox" name="selected[]" value="{{ rate.rate_id }}" id="select-rate-{{ rate.rate_id }}" style="styled"><label for="select-rate-{{ rate.rate_id }}">&nbsp;</label></div></td>
+                        <td class="text-left"><div class="as-checkbox"><input type="checkbox" name="selected[]" value="{{ rate.rate_id }}" id="select-rate-{{ rate.rate_id }}"><label for="select-rate-{{ rate.rate_id }}">&nbsp;</label></div></td>
                         <td class="text-left"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.description }}</a></td>
                         <td class="text-left"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.name }}</a></td>
                         <td class="text-left">{{ rate.status }}</td>
@@ -115,7 +115,7 @@
                   <tr>
                     <th class="text-left">{{ text.column_sort_order }}</th>
                     <th class="text-left">{{ text.column_title_display }}</th>
-                    <th class="text-left" style="width: 35%">{{ text.column_formula }}</th>
+                    <th class="text-left">{{ text.column_formula }}</th>
                     <th class="text-left">{{ text.column_method }}</th>
                     <th>&nbsp;</th>
                   </tr>
@@ -160,7 +160,7 @@
                             {% endfor %}
                           </select>
                         </td>
-                        <td style="text-align: right !important;"><button type="button" class="btn btn-danger" onclick="$('#combination-{{ combination_row }}').remove(); autosave();"><i class="fa fa-minus-circle"></i></button></td>
+                        <td class="as-actions"><button type="button" class="btn btn-danger" onclick="$('#combination-{{ combination_row }}').remove(); autosave();"><i class="fa fa-minus-circle"></i></button></td>
                       </tr>
                       {% set combination_row = combination_row + 1 %}
                     {% endfor %}
@@ -168,7 +168,7 @@
                 </tbody>
                 <tfoot>
                   <tr id="combination-footer">
-                    <td colspan="5" style="text-align: right !important;"><button type="button" class="btn btn-oca" onclick="addCombination();">{{ text.button_add_combination }}</button></td>
+                    <td class="as-actions" colspan="5"><button type="button" class="btn btn-oca" onclick="addCombination();">{{ text.button_add_combination }}</button></td>
                   </tr>
                 </tfoot>
               </table>
@@ -339,7 +339,7 @@
                 <div class="form-group">
                   <label for="enquiry" class="col-md-3 control-label">{{ text.entry_enquiry }}</label>
                   <div class="col-md-9">
-                    <textarea name="enquiry" id="enquiry" class="form-control" style="height: 300px;" placeholder="{{ text.placeholder_enquiry }}"></textarea>
+                    <textarea name="enquiry" id="enquiry" class="form-control as-enquiry" placeholder="{{ text.placeholder_enquiry }}"></textarea>
                   </div>
                 </div>
                 <div class="form-group">
@@ -357,7 +357,7 @@
 
 </div>
 
-<div id="is-footer">
+<div id="as-footer">
   {{ text.text_footer }}
 </div>
 
@@ -397,7 +397,7 @@
 			</div>
 			<div class="modal-body">
 				{{ text.modal_debug_body }}
-				<textarea wrap="off" readonly="readonly" id="debug-log" class="form-control" style="height: 350px;">{{ debug_log }}</textarea>
+				<textarea wrap="off" readonly="readonly" id="debug-log" class="form-control as-debug-log">{{ debug_log }}</textarea>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-link" data-bs-dismiss="modal">{{ text.button_close }}</button>
@@ -553,7 +553,7 @@
 		html += '     <option value="{{ param_key }}">{{ param }}</option>';
 		{% endfor %}
 		html += ' </select></td>';
-		html += ' <td style="text-align: right !important;"><button type="button" class="btn btn-danger" onclick="$(\'#combination-'+ combination_row +'\').remove(); autosave();"><i class="fa fa-minus-circle"></i></button></td>';
+		html += ' <td class="as-actions"><button type="button" class="btn btn-danger" onclick="$(\'#combination-'+ combination_row +'\').remove(); autosave();"><i class="fa fa-minus-circle"></i></button></td>';
 		html += '</tr>';
 
 		$('#combinations>tbody').append(html);
@@ -687,7 +687,7 @@
         if (json['success'] && json['rates']) {
           $.each(json['rates'], function(index, value) {
             html += '<tr data-rate-edit="'+ value['edit'] +'" id="rate'+ value['rate_id'] +'">';
-            html += '  <td class="text-left"><div class="is-checkbox"><input type="checkbox" name="selected[]" value="'+ value['rate_id'] +'" id="select-rate-'+ value['rate_id'] +'" style="styled"><label for="select-rate-'+ value['rate_id'] +'">&nbsp;</label></div></td>';
+            html += '  <td class="text-left"><div class="as-checkbox"><input type="checkbox" name="selected[]" value="'+ value['rate_id'] +'" id="select-rate-'+ value['rate_id'] +'"><label for="select-rate-'+ value['rate_id'] +'">&nbsp;</label></div></td>';
             html += '  <td class="text-left"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['description'] +'</a></td>';
             html += '  <td class="text-left"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['name'] +'</a></td>';
             html += '  <td class="text-left">'+ value['status'] +'</td>';
