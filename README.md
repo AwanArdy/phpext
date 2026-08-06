@@ -65,10 +65,10 @@
 
 ### Metode 1: Upload via Admin Panel (Direkomendasikan)
 
-1. **Zip folder ekstensi:**
+1. **Zip isi folder ekstensi** (file `install.json`, `admin/`, dan `catalog/` harus berada di root ZIP — bukan di dalam subfolder `advancedshipping/`, karena installer OpenCart 4 hanya mencari `install.json` di root archive):
    ```bash
-   cd upload/extension/
-   zip -r advancedshipping.ocmod.zip advancedshipping/
+   cd upload/extension/advancedshipping
+   zip -r ../advancedshipping.ocmod.zip admin catalog install.json
    ```
 
 2. **Login ke Admin Panel OpenCart 4**
