@@ -107,7 +107,57 @@ html, body {
 	margin-bottom: 20px;
 }
 
-/* ---- Navigation ---- */
+/* ---- Navigation (BS5 tabs styled like OC3 pills) ---- */
+.as-nav-pills {
+	gap: 0;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+}
+
+.as-nav-pills .nav-item {
+	margin: 0 0 0 10px;
+}
+
+.as-nav-pills .nav-link {
+	display: inline-block;
+	padding: 8px 13px;
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: var(--as-text);
+	background-color: var(--as-white);
+	border: 1px solid var(--as-border-strong);
+	border-radius: var(--as-radius);
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.as-nav-pills .nav-link:hover,
+.as-nav-pills .nav-link:focus {
+	color: var(--as-text);
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}
+
+.as-nav-pills .nav-link.active,
+.as-nav-pills .nav-link.active:hover,
+.as-nav-pills .nav-link.active:focus {
+	color: var(--as-text);
+	background-color: var(--as-muted);
+	border-color: #adadad;
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.as-help-btn {
+	padding: 8px 13px;
+	line-height: 1.42857143;
+	border-radius: var(--as-radius);
+}
+
+/* Legacy nav selectors (fallback) */
 .nav > li > a,
 .nav > li > button {
 	padding: 8px 13px;
@@ -385,13 +435,66 @@ label.control-label span:after {
 	border-radius: var(--as-radius);
 }
 
-/* ---- Modals ---- */
+/* ---- Modals (BS5, OC3 look) ---- */
 .modal-content {
+	border: 1px solid rgba(0, 0, 0, 0.2);
 	border-radius: var(--as-radius);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.modal-header > h4 {
+.modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px;
+	border-bottom: 1px solid var(--as-border);
+	border-top-left-radius: var(--as-radius);
+	border-top-right-radius: var(--as-radius);
+}
+
+.modal-header .modal-title,
+.modal-header > h4,
+.modal-header > h5 {
+	margin: 0;
 	font-size: 18px;
+	font-weight: 500;
+	line-height: 1.4;
+	color: var(--as-text);
+}
+
+.modal-header .btn-close {
+	padding: 0.5rem;
+	margin: -0.5rem -0.5rem -0.5rem auto;
+	opacity: 0.5;
+}
+
+.modal-header .btn-close:hover {
+	opacity: 0.85;
+}
+
+.modal-body {
+	padding: 15px;
+	position: relative;
+}
+
+.modal-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	padding: 15px;
+	border-top: 1px solid var(--as-border);
+	border-bottom-left-radius: var(--as-radius);
+	border-bottom-right-radius: var(--as-radius);
+}
+
+.modal-footer > * {
+	margin: 0;
+}
+
+.modal-backdrop.show {
+	opacity: 0.5;
 }
 
 /* ---- Loading ---- */
@@ -429,19 +532,73 @@ label.control-label span:after {
 	text-align: center;
 }
 
-/* ---- Notifications ---- */
+/* ---- Notifications / Alerts (BS5, OC3 look) ---- */
 #notification {
 	margin-bottom: 0 !important;
 }
 
-#notification button.close {
-	margin-top: -2px;
+#notification .alert {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 6px;
 }
 
 .alert {
+	position: relative;
 	border-radius: var(--as-radius);
-	padding: 10px;
+	padding: 10px 40px 10px 12px;
 	margin-bottom: 10px;
+	border: 1px solid transparent;
+	line-height: 1.5;
+}
+
+.alert > .fa,
+.alert > .fas,
+.alert > .far {
+	margin-right: 4px;
+}
+
+.alert.alert-dismissible {
+	padding-right: 40px;
+}
+
+.alert .btn-close {
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	transform: translateY(-50%);
+	padding: 0.4rem;
+	opacity: 0.55;
+}
+
+.alert .btn-close:hover {
+	opacity: 0.9;
+}
+
+/* Keep OC3-ish alert colors if theme overrides are weak */
+.alert-success {
+	color: #3c763d;
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+}
+
+.alert-info {
+	color: #31708f;
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+}
+
+.alert-warning {
+	color: #8a6d3b;
+	background-color: #fcf8e3;
+	border-color: #faebcc;
+}
+
+.alert-danger {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
 }
 
 .rate-error {
@@ -529,4 +686,145 @@ label.control-label span:after {
 
 .as-checkbox.as-checkbox-inline {
 	margin-top: 0;
+}
+
+/* ---- Tooltips ---- */
+label.control-label span[data-bs-toggle="tooltip"],
+label.control-label span[rel="tooltip"] {
+	border-bottom: 1px dotted var(--as-border-strong);
+	cursor: help;
+}
+
+.tooltip {
+	z-index: 1080;
+	font-size: 12px;
+	opacity: 1;
+}
+
+.tooltip .tooltip-inner {
+	max-width: 280px;
+	padding: 6px 10px;
+	color: #fff;
+	text-align: left;
+	background-color: #333;
+	border-radius: var(--as-radius);
+	line-height: 1.4;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before,
+.tooltip.bs-tooltip-auto[data-popper-placement^="bottom"] .tooltip-arrow::before {
+	border-bottom-color: #333;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before,
+.tooltip.bs-tooltip-auto[data-popper-placement^="top"] .tooltip-arrow::before {
+	border-top-color: #333;
+}
+
+.tooltip.bs-tooltip-start .tooltip-arrow::before,
+.tooltip.bs-tooltip-auto[data-popper-placement^="left"] .tooltip-arrow::before {
+	border-left-color: #333;
+}
+
+.tooltip.bs-tooltip-end .tooltip-arrow::before,
+.tooltip.bs-tooltip-auto[data-popper-placement^="right"] .tooltip-arrow::before {
+	border-right-color: #333;
+}
+
+/* ---- Bootstrap 3 → 5 compatibility shims (OC3 visual parity) ---- */
+.btn-default {
+	color: #333;
+	background-color: #fff;
+	border-color: #ccc;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active {
+	color: #333;
+	background-color: #e6e6e6;
+	border-color: #adadad;
+}
+
+.btn-default:disabled,
+.btn-default.disabled,
+.btn-default[disabled] {
+	color: #777;
+	background-color: #fff;
+	border-color: #ccc;
+	opacity: 0.65;
+	pointer-events: none;
+}
+
+.btn-default.btn-oca,
+.btn-oca.btn-default {
+	/* toggle active state uses both classes */
+}
+
+.pull-left { float: left !important; }
+.pull-right { float: right !important; }
+
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
+/* form-horizontal / control-label alignment like OC3 */
+.form-horizontal .control-label,
+label.control-label {
+	padding-top: 7px;
+	margin-bottom: 0;
+	text-align: right;
+	font-weight: normal;
+}
+
+@media (max-width: 767.98px) {
+	.form-horizontal .control-label,
+	label.control-label {
+		text-align: left;
+	}
+}
+
+/* input-group-addon → look like BS5 input-group-text */
+.input-group-addon {
+	display: flex;
+	align-items: center;
+	padding: 0.375rem 0.75rem;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: var(--as-text);
+	text-align: center;
+	white-space: nowrap;
+	background-color: var(--as-muted);
+	border: 1px solid var(--as-border);
+	border-radius: var(--as-radius);
+}
+
+.input-group > .input-group-addon:not(:first-child) {
+	margin-left: -1px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.input-group > .form-control:not(:last-child) {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+/* Tab panes — only one visible (no fade; avoids BS5 transition hang) */
+#as-content .tab-content > .tab-pane {
+	display: none !important;
+}
+
+#as-content .tab-content > .tab-pane.active {
+	display: block !important;
+}
+
+/* Header row flex safety inside OC admin */
+#as-header .container .row {
+	display: block;
+}
+
+#as-header .d-flex {
+	width: 100%;
 }

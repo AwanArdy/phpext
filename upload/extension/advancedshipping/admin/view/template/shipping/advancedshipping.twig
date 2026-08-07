@@ -14,14 +14,26 @@
   <div id="as-header">
     <div class="container">
       <div class="row">
-        <h2 class="as-logo pull-left">ADVANCED <span>SHIPPING</span> <span class="as-logo-version">{{ version }}</span></h2>
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-rates">{{ text.tab_rate }}</a></li>
-          <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-combinations">{{ text.tab_combination }}</a></li>
-          <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-settings">{{ text.tab_settings }}</a></li>
-          <li><a role="button" class="btn btn-default" data-bs-toggle="tab" data-bs-target="#tab-support">{{ text.tab_support }}</a></li>
-          <li><button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalInfo"><i class="fa fa-question-circle"></i></button></li>
-        </ul>
+        <div class="d-flex flex-wrap align-items-center justify-content-between w-100">
+          <h2 class="as-logo mb-0">ADVANCED <span>SHIPPING</span> <span class="as-logo-version">{{ version }}</span></h2>
+          <ul class="nav nav-pills as-nav-pills" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link active" id="tab-rates-btn" data-bs-toggle="tab" data-bs-target="#tab-rates" role="tab" aria-controls="tab-rates" aria-selected="true">{{ text.tab_rate }}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" id="tab-combinations-btn" data-bs-toggle="tab" data-bs-target="#tab-combinations" role="tab" aria-controls="tab-combinations" aria-selected="false">{{ text.tab_combination }}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" id="tab-settings-btn" data-bs-toggle="tab" data-bs-target="#tab-settings" role="tab" aria-controls="tab-settings" aria-selected="false">{{ text.tab_settings }}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="nav-link" id="tab-support-btn" data-bs-toggle="tab" data-bs-target="#tab-support" role="tab" aria-controls="tab-support" aria-selected="false">{{ text.tab_support }}</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button type="button" class="btn btn-info as-help-btn" data-bs-toggle="modal" data-bs-target="#modalInfo" title="{{ text.modal_info_header }}"><i class="fa fa-question-circle"></i></button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -31,14 +43,14 @@
     <div id="as-content" class="container">
 
       <div id="notification" class="row">
-        {% if success %}<div class="alert alert-success"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
-        {% if error %}<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
-        {% if not status %}<div class="alert alert-warning"><i class="fa fa-exclamation-circle"></i> {{ text.text_notification_status }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
-        {% if test %}<div class="alert alert-info"><i class="fa fa-info-circle"></i> {{ text.text_notification_test }} <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>{% endif %}
+        {% if success %}<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle"></i> {{ success }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endif %}
+        {% if error %}<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-exclamation-circle"></i> {{ error }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endif %}
+        {% if not status %}<div class="alert alert-warning alert-dismissible fade show" role="alert"><i class="fa fa-exclamation-circle"></i> {{ text.text_notification_status }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endif %}
+        {% if test %}<div class="alert alert-info alert-dismissible fade show" role="alert"><i class="fa fa-info-circle"></i> {{ text.text_notification_test }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endif %}
       </div>
 
       <div class="tab-content">
-        <div id="tab-rates" class="tab-pane active">
+        <div id="tab-rates" class="tab-pane active" role="tabpanel" aria-labelledby="tab-rates-btn">
           <div class="row">
             <h2>{{ text.heading_rates }}</h2>
             <div class="box">
@@ -106,7 +118,7 @@
           </div>
         </div>
 
-        <div id="tab-combinations" class="tab-pane">
+        <div id="tab-combinations" class="tab-pane" role="tabpanel" aria-labelledby="tab-combinations-btn">
           <div class="row">
             <h2>{{ text.heading_combinations }}</h2>
             <div class="box">
@@ -182,7 +194,7 @@
           </div>
         </div>
 
-        <div id="tab-settings" class="tab-pane">
+        <div id="tab-settings" class="tab-pane" role="tabpanel" aria-labelledby="tab-settings-btn">
           <div class="row">
             <h2>{{ text.heading_settings }}</h2>
             <div class="box">
@@ -314,7 +326,7 @@
           </div>
         </div>
 
-        <div id="tab-support" class="tab-pane">
+        <div id="tab-support" class="tab-pane" role="tabpanel" aria-labelledby="tab-support-btn">
           <div class="row">
             <h2>{{ text.heading_support }}</h2>
             <div class="box">
@@ -371,12 +383,12 @@
 </div>
 
 <!-- Modals -->
-<div class="modal fade" id="modalInfo" role="dialog">
+<div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ text.modal_info_header }}</h4>
+				<h5 class="modal-title">{{ text.modal_info_header }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				{{ text.modal_info_body }}
@@ -388,12 +400,12 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modalDebug" role="dialog">
+<div class="modal fade" id="modalDebug" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ text.modal_debug_header }}</h4>
+				<h5 class="modal-title">{{ text.modal_debug_header }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				{{ text.modal_debug_body }}
@@ -409,12 +421,12 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modalBackup" role="dialog">
+<div class="modal fade" id="modalBackup" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ text.modal_backup_header }}</h4>
+				<h5 class="modal-title">{{ text.modal_backup_header }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
         {{ text.modal_backup_body }}
@@ -448,12 +460,12 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modalImport" role="dialog">
+<div class="modal fade" id="modalImport" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ text.modal_import_header }}</h4>
+				<h5 class="modal-title">{{ text.modal_import_header }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<form role="form" action="{{ action_import }}" method="post" enctype="multipart/form-data" id="import">
@@ -471,12 +483,12 @@
 	</div>
 </div>
 
-<div class="modal fade" id="modalExport" role="dialog">
+<div class="modal fade" id="modalExport" tabindex="-1" role="dialog" aria-hidden="true">
 	<div class="modal-dialog modal-md">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ text.modal_export_header }}</h4>
+				<h5 class="modal-title">{{ text.modal_export_header }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				{{ text.modal_export_body }}
@@ -574,7 +586,7 @@
 			success: function(json) {
 				$('.alert-success, .alert-danger').remove();
 				if (json['success']) {
-					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
 					$('#debug-log').val('');
 				}
 			}
@@ -591,10 +603,10 @@
 			success: function(json) {
 				$('.alert-success, .alert-danger').remove();
 				if (json['error']) {
-					$('#modalDebug .modal-body').prepend('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> '+ json['error'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-exclamation-circle"></i> '+ json['error'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
 				}
 				if (json['success']) {
-					$('#modalDebug .modal-body').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
+					$('#modalDebug .modal-body').prepend('<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
 					$('#debug-log').val(json['debug_log']);
 				}
 			}
@@ -611,7 +623,7 @@
 			success: function(json) {
 				$('.alert-success, .alert-danger').remove();
 				if (json['success']) {
-					$('#notification').prepend('<div class="alert alert-success"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
+					$('#notification').prepend('<div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle"></i> '+ json['success'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
 				}
 			}
 		});
@@ -642,28 +654,74 @@
 		});
 	}
 
+	function switchAsTab(btn) {
+		if (!btn) { return; }
+		var targetSelector = btn.getAttribute('data-bs-target');
+		if (!targetSelector) { return; }
+
+		document.querySelectorAll('.as-nav-pills [data-bs-toggle="tab"]').forEach(function(b) {
+			b.classList.remove('active');
+			b.setAttribute('aria-selected', 'false');
+		});
+		btn.classList.add('active');
+		btn.setAttribute('aria-selected', 'true');
+
+		document.querySelectorAll('#as-content .tab-content > .tab-pane').forEach(function(pane) {
+			pane.classList.remove('active', 'show');
+			pane.style.display = 'none';
+		});
+
+		var pane = document.querySelector(targetSelector);
+		if (pane) {
+			pane.classList.add('active');
+			pane.style.display = 'block';
+		}
+	}
+
+	$(document).on('click', '.as-nav-pills [data-bs-toggle="tab"]', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		switchAsTab(this);
+	});
+
 	$(document).ready(function() {
 		editRate();
 		tooltips();
+		// Ensure only the active tab pane is visible after load/refresh
+		var activeBtn = document.querySelector('.as-nav-pills [data-bs-toggle="tab"].active');
+		if (activeBtn) {
+			switchAsTab(activeBtn);
+		} else {
+			var firstBtn = document.querySelector('.as-nav-pills [data-bs-toggle="tab"]');
+			if (firstBtn) { switchAsTab(firstBtn); }
+		}
 	});
 //--></script>
 
 <script type="text/javascript"><!--
   var tooltip_status = true;
   function tooltips() {
-    if (tooltip_status) {
-      var tooltipEls = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      tooltipEls.forEach(function(el) {
-        var existing = bootstrap.Tooltip.getInstance(el);
-        if (!existing) { new bootstrap.Tooltip(el, { trigger: 'hover' }); }
-      });
-    } else {
-      var tooltipEls = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      tooltipEls.forEach(function(el) {
-        var instance = bootstrap.Tooltip.getInstance(el);
-        if (instance) { instance.disable(); }
-      });
-    }
+    var selector = '[data-bs-toggle="tooltip"], [rel="tooltip"]';
+    var tooltipEls = [].slice.call(document.querySelectorAll(selector));
+    tooltipEls.forEach(function(el) {
+      // Skip pure modal triggers that only open modals (no title)
+      if (!el.getAttribute('title') && !el.getAttribute('data-bs-original-title') && !el.getAttribute('data-bs-title')) {
+        return;
+      }
+      var existing = bootstrap.Tooltip.getInstance(el);
+      if (tooltip_status) {
+        if (existing) {
+          existing.enable();
+        } else {
+          var opts = { trigger: 'hover', container: 'body', boundary: 'window' };
+          var placement = el.getAttribute('data-bs-placement') || el.getAttribute('data-placement');
+          if (placement) { opts.placement = placement; }
+          new bootstrap.Tooltip(el, opts);
+        }
+      } else if (existing) {
+        existing.disable();
+      }
+    });
   }
 //--></script>
 
@@ -724,10 +782,10 @@
       success: function(json) {
         $('.alert-success, .alert-danger').remove();
         if (json['error']) {
-          $('#support').prepend('<div class="alert alert-danger text-center col-sm-12">'+ json['error'] +'</div>');
+          $('#support').prepend('<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">'+ json['error'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
         }
         if (json['success']) {
-          $('#support').prepend('<div class="alert alert-success text-center col-sm-12">'+ json['success'] +'</div>');
+          $('#support').prepend('<div class="alert alert-success alert-dismissible fade show text-center" role="alert">'+ json['success'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
           $('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea').val('');
         }
       }
