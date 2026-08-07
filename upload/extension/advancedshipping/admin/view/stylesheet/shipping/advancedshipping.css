@@ -103,11 +103,29 @@ html, body {
 	padding: 10px;
 }
 
-.row {
-	margin-bottom: 20px;
+.as-section-title {
+	font-size: 1.35rem;
+	font-weight: 600;
+	color: var(--as-text-dark);
+	border-bottom: 1px solid var(--as-border);
+	letter-spacing: 0.2px;
 }
 
-/* ---- Navigation (BS5 tabs styled like OC3 pills) ---- */
+.as-geo-zone .clearfix h3 {
+	font-size: 1.15rem;
+	font-weight: 600;
+	color: var(--as-text-dark);
+}
+
+#form .col-form-label {
+	font-weight: 700;
+	text-align: left !important;
+}
+
+/* ---- List page rows keep a consistent gap; form rows use Bootstrap mb-* ---- */
+.tab-pane .row {
+	margin-bottom: 20px;
+}
 .as-nav-pills {
 	gap: 0;
 	flex-wrap: wrap;
