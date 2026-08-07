@@ -107,8 +107,8 @@
                             <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#modalExport">{{ text.button_export }}</button>
                           </div>
                           <a class="btn btn-oca" href="{{ action_add }}">{{ text.button_add }}</a>
+                          <a role="button" class="btn btn-danger" onclick="if (confirm('{{ text.text_warning_delete }}')) { $('#rates').submit(); }">{{ text.button_delete }}</a>
                         </div>
-                        <a role="button" class="btn btn-danger pull-left" onclick="if (confirm('{{ text.text_warning_delete }}')) { $('#rates').submit(); }">{{ text.button_delete }}</a>
                       </td>
                     </tr>
                   </tfoot>

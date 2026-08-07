@@ -48,14 +48,14 @@
             <div class="box">
 			  <input type="hidden" name="rate_id" value="{{ rate_id }}" />
               <div class="form-group">
-                <label class="control-label col-md-3" for="description"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_description }}">{{ text.entry_description }}</span></label>
-                <div class="col-md-9">
+                <label class="col-sm-2 col-form-label" for="description"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_description }}">{{ text.entry_description }}</span></label>
+                <div class="col-sm-10">
                   <input type="text" name="description" id="description" value="{{ data.description }}" class="form-control" placeholder="{{ text.placeholder_description }}" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-md-3" for="status"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_status }}">{{ text.entry_rate_status }}</span></label>
-                <div class="col-md-9">
+                <label class="col-sm-2 col-form-label" for="status"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_status }}">{{ text.entry_rate_status }}</span></label>
+                <div class="col-sm-10">
                   <input type="hidden" name="status" value="{{ data.status }}" />
                   <div class="btn-group toggle" role="group">
                     {% if data.status %}
@@ -69,14 +69,14 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-md-3" for="rate-group"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_group }}">{{ text.entry_group }}</span></label>
-                <div class="col-md-9">
+                <label class="col-sm-2 col-form-label" for="rate-group"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_group }}">{{ text.entry_group }}</span></label>
+                <div class="col-sm-10">
                   <input type="text" name="group" id="rate-group" value="{{ data.group }}" class="form-control" />
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-md-3" for="tax-class-id"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_tax_class_id }}">{{ text.entry_tax_class_id }}</span></label>
-                <div class="col-md-9">
+                <label class="col-sm-2 col-form-label" for="tax-class-id"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_tax_class_id }}">{{ text.entry_tax_class_id }}</span></label>
+                <div class="col-sm-10">
                   <select name="tax_class_id" id="tax-class-id" class="form-control">
                     {% for tax_class in tax_classes %}
                       {% if tax_class.tax_class_id == data.tax_class_id %}
@@ -89,8 +89,8 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-md-3" for="total-type"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_total_type }}">{{ text.entry_total_type }}</span></label>
-                <div class="col-md-9">
+                <label class="col-sm-2 col-form-label" for="total-type"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_total_type }}">{{ text.entry_total_type }}</span></label>
+                <div class="col-sm-10">
                   <select name="total_type" id="total-type" class="form-control">
                     {% for param_key, param in total_type %}
                       {% if param_key == data.total_type %}
@@ -103,8 +103,8 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-md-3" for="origin"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_origin }}">{{ text.entry_origin }}</span></label>
-                <div class="col-md-9">
+                <label class="col-sm-2 col-form-label" for="origin"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_origin }}">{{ text.entry_origin }}</span></label>
+                <div class="col-sm-10">
                   <input type="text" name="origin" id="origin" class="form-control" value="{{ data.origin }}" placeholder="{{ text.placeholder_origin }}" />
                   <span id="error-origin" class="rate-error" style="display: none;"></span>
                 </div>
