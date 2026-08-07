@@ -18,16 +18,16 @@
           <h2 class="as-logo mb-0">ADVANCED <span>SHIPPING</span> <span class="as-logo-version">{{ version }}</span></h2>
           <ul class="nav nav-pills as-nav-pills" role="tablist">
             <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link active" id="tab-rates-btn" data-bs-toggle="tab" data-bs-target="#tab-rates" role="tab" aria-controls="tab-rates" aria-selected="true">{{ text.tab_rate }}</button>
+              <button type="button" class="nav-link active" id="tab-rates-btn" data-bs-target="#tab-rates" role="tab" aria-controls="tab-rates" aria-selected="true">{{ text.tab_rate }}</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link" id="tab-combinations-btn" data-bs-toggle="tab" data-bs-target="#tab-combinations" role="tab" aria-controls="tab-combinations" aria-selected="false">{{ text.tab_combination }}</button>
+              <button type="button" class="nav-link" id="tab-combinations-btn" data-bs-target="#tab-combinations" role="tab" aria-controls="tab-combinations" aria-selected="false">{{ text.tab_combination }}</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link" id="tab-settings-btn" data-bs-toggle="tab" data-bs-target="#tab-settings" role="tab" aria-controls="tab-settings" aria-selected="false">{{ text.tab_settings }}</button>
+              <button type="button" class="nav-link" id="tab-settings-btn" data-bs-target="#tab-settings" role="tab" aria-controls="tab-settings" aria-selected="false">{{ text.tab_settings }}</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link" id="tab-support-btn" data-bs-toggle="tab" data-bs-target="#tab-support" role="tab" aria-controls="tab-support" aria-selected="false">{{ text.tab_support }}</button>
+              <button type="button" class="nav-link" id="tab-support-btn" data-bs-target="#tab-support" role="tab" aria-controls="tab-support" aria-selected="false">{{ text.tab_support }}</button>
             </li>
             <li class="nav-item" role="presentation">
               <button type="button" class="btn btn-info as-help-btn" data-bs-toggle="modal" data-bs-target="#modalInfo" title="{{ text.modal_info_header }}"><i class="fa fa-question-circle"></i></button>
@@ -659,7 +659,7 @@
 		var targetSelector = btn.getAttribute('data-bs-target');
 		if (!targetSelector) { return; }
 
-		document.querySelectorAll('.as-nav-pills [data-bs-toggle="tab"]').forEach(function(b) {
+		document.querySelectorAll('.as-nav-pills .nav-link').forEach(function(b) {
 			b.classList.remove('active');
 			b.setAttribute('aria-selected', 'false');
 		});
@@ -668,17 +668,15 @@
 
 		document.querySelectorAll('#as-content .tab-content > .tab-pane').forEach(function(pane) {
 			pane.classList.remove('active', 'show');
-			pane.style.display = 'none';
 		});
 
 		var pane = document.querySelector(targetSelector);
 		if (pane) {
 			pane.classList.add('active');
-			pane.style.display = 'block';
 		}
 	}
 
-	$(document).on('click', '.as-nav-pills [data-bs-toggle="tab"]', function(e) {
+	$(document).on('click', '.as-nav-pills .nav-link', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		switchAsTab(this);
@@ -688,11 +686,11 @@
 		editRate();
 		tooltips();
 		// Ensure only the active tab pane is visible after load/refresh
-		var activeBtn = document.querySelector('.as-nav-pills [data-bs-toggle="tab"].active');
+		var activeBtn = document.querySelector('.as-nav-pills .nav-link.active');
 		if (activeBtn) {
 			switchAsTab(activeBtn);
 		} else {
-			var firstBtn = document.querySelector('.as-nav-pills [data-bs-toggle="tab"]');
+			var firstBtn = document.querySelector('.as-nav-pills .nav-link');
 			if (firstBtn) { switchAsTab(firstBtn); }
 		}
 	});
