@@ -1,0 +1,13 @@
+LAPORAN PROYEK — ADVANCED SHIPPING (OpenCart 4)
+Status: DONE
+
+1. Ekstensi "Advanced Shipping" v2.0.0 dinyatakan siap digunakan pada OpenCart 4.0.x.
+2. Pengujian live di OC 4.0.2.3 (Docker): quote checkout berfungsi penuh, nama metode & biaya tampil benar, tanpa error fatal di sisi catalog maupun admin.
+3. Perbaikan bug kritis (satu file: catalog/model/shipping/advancedshipping.php):
+   - #1 Length/Weight::convert kini menggunakan cast string untuk mencegah TypeError strict_types.
+   - #2 saveCart menggunakan kolom subscription_plan_id menggantikan recurring_id yang tidak ada di OC4.
+   - #3 quote & method data kini memakai key 'name' sehingga nama metode tidak lagi tampil "undefined".
+4. Pembersihan repository: 10 file OC3 intuitiveshipping dan file sampah ac22d29===== telah dihapus.
+5. Seluruh file lolos pemeriksaan php -l; halaman admin ekstensi render bersih tanpa error.
+
+Catatan: perubahan belum di-commit; disarankan melakukan commit sebelum deployment ke produksi.
