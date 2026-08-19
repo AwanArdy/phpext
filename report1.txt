@@ -1,0 +1,43 @@
+LAPORAN PROYEK — ADVANCED SHIPPING (OpenCart 4)
+Tugas: Penyesuaian Tampilan Admin Agar Sama Dengan OC3 ("Intuitive Shipping")
+Status: DONE
+
+Permintaan klien: tampilan halaman admin ekstensi dibuat "seperti aslinya" (OC3/Intuitive Shipping),
+tetapi lebih rapi — khususnya tanpa bug overflow pada daftar checkbox yang ada di versi OC3.
+
+1. Halaman rate (advancedshipping_rate.twig) dibangun ulang ke layout OC3 2-kolom:
+   - Setiap bagian kini dibungkus <div class="row"> + <div class="col-md-3"> (judul h2)
+     + <div class="col-md-9"> (isi dalam <div class="box">), identik dengan OC3.
+   - Semua field memakai pola form-horizontal OC3: .form-group + .control-label col-md-3 + .col-md-9.
+   - Bagian "Advanced Options" dikonversi dari .as-options (abu-abu) menjadi .bg-info (biru muda #d9edf7)
+     persis seperti OC3; bagian ocapps juga memakai bg-info text-center.
+   - Semua markup Bootstrap 5 tetap dipertahankan (data-bs-toggle, data-bs-target, btn-close, modal).
+
+2. CSS (advancedshipping.css):
+   - Bug overflow versi OC3 DIPERBAIKI: .as-well tidak lagi memotong daftar checkbox
+     (max-height/overflow-y/hover-expand dihapus; semua checkbox tampil penuh).
+   - .form-group diberi display:flex + flex-wrap agar kolom label/input berdampingan di Bootstrap 5
+     (menggantikan perilaku .row di Bootstrap 3).
+   - .box .bg-info diberi padding 20px dan background #d9edf7 !important agar menang atas
+     utility .bg-info bawaan Bootstrap 5.
+   - Font Oswald ditambahkan ke h1/h2 (mirip tampilan OC3).
+   - .btn-danger di-override menjadi gaya putih ala OC3 dengan ikon merah fa-minus-circle
+     (termasuk state disabled).
+   - Margin global .row = 20px diembalikan agar jarak antar bagian sama dengan OC3.
+   - Rule CSS yang tidak terpakai dihapus (.as-section-title, .as-notice, .as-geo-zone .clearfix h3).
+
+3. Halaman utama (advancedshipping.twig):
+   - Tombol delete kembali ke pull-left, terpisah dari grup tombol import/export/add yang pull-right
+     (menyamakan posisi dengan OC3).
+
+4. Controller (advancedshipping.php):
+   - Font Oswald (Google Fonts) dimuat di method rate page, tidak hanya di method index.
+   - Lolos php -l.
+
+5. Paket ekstensi upload/extension/advancedshipping.ocmod.zip telah diregenerasi
+   dan isinya diverifikasi sama dengan file sumber.
+
+Verifikasi: seluruh file lolos pemeriksaan php -l; keseimbangan tag HTML kedua template lolos
+(div/form/table/label/select dll.); zip berisi versi terbaru dari ketiga file yang diubah.
+
+Catatan: perubahan belum di-commit; disarankan melakukan commit sebelum deployment ke produksi.

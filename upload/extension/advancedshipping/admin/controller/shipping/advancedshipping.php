@@ -186,6 +186,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$data['email'] = $this->config->get('config_email');
 
 		// OC4 extension assets live under /extension/{code}/admin/view/... (not admin/view/stylesheet/extension/...)
+		$this->document->addStyle('https://fonts.googleapis.com/css?family=Oswald:400,700');
 		$this->document->addStyle('../extension/' . $this->extension . '/admin/view/stylesheet/shipping/' . $this->extension . '.css?v=' . $this->version);
 		$this->document->setTitle($data['text']['text_name'] ?? 'Advanced Shipping');
 
@@ -386,6 +387,7 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 		$data['ocapps_integration'] = $this->ocappsStatus;
 
+		$this->document->addStyle('https://fonts.googleapis.com/css?family=Oswald:400,700');
 		$this->document->addStyle('../extension/' . $this->extension . '/admin/view/stylesheet/shipping/' . $this->extension . '.css?v=' . $this->version);
 		$this->document->addStyle('../extension/' . $this->extension . '/admin/view/javascript/shipping/' . $this->extension . '/jquery.datetimepicker.css');
 		$this->document->addScript('../extension/' . $this->extension . '/admin/view/javascript/shipping/' . $this->extension . '/jquery.datetimepicker.js');

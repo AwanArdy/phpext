@@ -40,154 +40,177 @@
 
       <form id="form" action="{{ action }}" method="post" class="form-horizontal">
 
-        <div class="as-section-title mb-3 pb-2">{{ text.heading_rate_general }}</div>
-
-        <input type="hidden" name="rate_id" value="{{ rate_id }}" />
-
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label" for="description"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_description }}">{{ text.entry_description }}</span></label>
-          <div class="col-sm-10">
-            <input type="text" name="description" id="description" value="{{ data.description }}" class="form-control" placeholder="{{ text.placeholder_description }}" />
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_general }}</h2>
           </div>
-        </div>
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label" for="status"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_status }}">{{ text.entry_rate_status }}</span></label>
-          <div class="col-sm-10">
-            <input type="hidden" name="status" value="{{ data.status }}" />
-            <div class="btn-group toggle" role="group">
-              {% if data.status %}
-              <button type="button" data-setting="status" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
-              <button type="button" data-setting="status" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
-              {% else %}
-              <button type="button" data-setting="status" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
-              <button type="button" data-setting="status" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
-              {% endif %}
+          <div class="col-md-9">
+            <div class="box">
+              <input type="hidden" name="rate_id" value="{{ rate_id }}" />
+              <div class="form-group">
+                <label class="control-label col-md-3" for="description"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_description }}">{{ text.entry_description }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="description" id="description" value="{{ data.description }}" class="form-control" placeholder="{{ text.placeholder_description }}" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="status"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_status }}">{{ text.entry_rate_status }}</span></label>
+                <div class="col-md-9">
+                  <input type="hidden" name="status" value="{{ data.status }}" />
+                  <div class="btn-group toggle" role="group">
+                    {% if data.status %}
+                    <button type="button" data-setting="status" class="btn btn-default unlocked_active">{{ text.text_off }}</button>
+                    <button type="button" data-setting="status" class="btn btn-oca unlocked_active">{{ text.text_on }}</button>
+                    {% else %}
+                    <button type="button" data-setting="status" class="btn btn-oca unlocked_inactive">{{ text.text_off }}</button>
+                    <button type="button" data-setting="status" class="btn btn-default unlocked_inactive">{{ text.text_on }}</button>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="rate-group"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_group }}">{{ text.entry_group }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="group" id="rate-group" value="{{ data.group }}" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="tax-class-id"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_tax_class_id }}">{{ text.entry_tax_class_id }}</span></label>
+                <div class="col-md-9">
+                  <select name="tax_class_id" id="tax-class-id" class="form-control">
+                    {% for tax_class in tax_classes %}
+                      {% if tax_class.tax_class_id == data.tax_class_id %}
+                        <option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+                      {% else %}
+                        <option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="total-type"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_total_type }}">{{ text.entry_total_type }}</span></label>
+                <div class="col-md-9">
+                  <select name="total_type" id="total-type" class="form-control">
+                    {% for param_key, param in total_type %}
+                      {% if param_key == data.total_type %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                      {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-md-3" for="origin"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_origin }}">{{ text.entry_origin }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="origin" id="origin" class="form-control" value="{{ data.origin }}" placeholder="{{ text.placeholder_origin }}" />
+                  <span id="error-origin" class="rate-error" style="display: none;"></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label" for="rate-group"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_group }}">{{ text.entry_group }}</span></label>
-          <div class="col-sm-10">
-            <input type="text" name="group" id="rate-group" value="{{ data.group }}" class="form-control" />
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label" for="tax-class-id"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_tax_class_id }}">{{ text.entry_tax_class_id }}</span></label>
-          <div class="col-sm-10">
-            <select name="tax_class_id" id="tax-class-id" class="form-control">
-              {% for tax_class in tax_classes %}
-                {% if tax_class.tax_class_id == data.tax_class_id %}
-                  <option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
-                {% else %}
-                  <option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label" for="total-type"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_total_type }}">{{ text.entry_total_type }}</span></label>
-          <div class="col-sm-10">
-            <select name="total_type" id="total-type" class="form-control">
-              {% for param_key, param in total_type %}
-                {% if param_key == data.total_type %}
-                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
-                {% else %}
-                  <option value="{{ param_key }}">{{ param }}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label" for="origin"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_origin }}">{{ text.entry_origin }}</span></label>
-          <div class="col-sm-10">
-            <input type="text" name="origin" id="origin" class="form-control" value="{{ data.origin }}" placeholder="{{ text.placeholder_origin }}" />
-            <span id="error-origin" class="rate-error" style="display: none;"></span>
-          </div>
-        </div>
 
-        <div class="as-section-title mb-3 mt-4 pb-2">{{ text.heading_rate_display }}</div>
-
-        <div class="row mb-3">
-          <label class="col-sm-2 col-form-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_name }}">{{ text.entry_name }}</span></label>
-          <div class="col-sm-10">
-            {% for lang in languages %}
-            <div class="input-group mb-2">
-              <input type="text" name="name[{{ lang.code }}]" id="name" value="{{ data.name[lang.code] ? data.name[lang.code] : '' }}" class="form-control" placeholder="{{ text.placeholder_name }}" />
-              <span class="input-group-addon">{{ lang.name }}</span>
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_display }}</h2>
+          </div>
+          <div class="col-md-9">
+            <div class="box">
+              <div class="form-group">
+                <label class="control-label col-md-3"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_name }}">{{ text.entry_name }}</span></label>
+                <div class="col-md-9">
+                  {% for lang in languages %}
+                  <div class="input-group mb-2">
+                    <input type="text" name="name[{{ lang.code }}]" id="name" value="{{ data.name[lang.code] ? data.name[lang.code] : '' }}" class="form-control" placeholder="{{ text.placeholder_name }}" />
+                    <span class="input-group-addon">{{ lang.name }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="sort-order" class="control-label col-md-3"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_sort_order }}">{{ text.entry_sort_order }}</span></label>
+                <div class="col-md-9">
+                  <input type="text" name="sort_order" id="sort-order" value="{{ data.sort_order }}" class="form-control" />
+                </div>
+              </div>
             </div>
-            {% endfor %}
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label for="sort-order" class="col-sm-2 col-form-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_sort_order }}">{{ text.entry_sort_order }}</span></label>
-          <div class="col-sm-10">
-            <input type="text" name="sort_order" id="sort-order" value="{{ data.sort_order }}" class="form-control" />
           </div>
         </div>
 
         {% set x = 1 %}
         {% for geo_zone_id, geo_zone in geo_zones %}
-        {% if x == 1 %}<div class="as-section-title mb-3 mt-4 pb-2">{{ text.heading_rate_cost }}</div>{% endif %}
-        <div class="as-geo-zone mb-3">
-          <div class="clearfix">
-            <h3 class="pull-left">{{ geo_zone }}</h3>
-            <a role="button" class="btn btn-link pull-right edit" onclick="toggleGeoZone({{ geo_zone_id }});">{{ text.button_edit }}</a>
+        <div class="row">
+          {% if x == 1 %}
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_cost }}</h2>
           </div>
-          <div id="shipping-{{ geo_zone_id }}" {% if data.shipping[geo_zone_id].rates is empty %}style="display: none;"{% endif %}>
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label" for="shipping-{{ geo_zone_id }}-rate-type"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_type }}">{{ text.entry_rate_type }}</span></label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <select name="shipping[{{ geo_zone_id }}][rate_type]" id="shipping-{{ geo_zone_id }}-rate-type" class="form-control" onclick="toggleRateType({{ geo_zone_id }});">
-                  {% for key, value in rate_types %}
-                    {% if value %}
-                      <optgroup label="{{ text['text_rate_group_'~key] }}">
-                      {% for param_key, param in value %}
-                        {% if data.shipping[geo_zone_id].rate_type and param_key == data.shipping[geo_zone_id].rate_type %}
-                          <option value="{{ param_key }}" selected="selected">{{ param }}</option>
-                        {% else %}
-                          <option value="{{ param_key }}">{{ param }}</option>
+          {% else %}
+          <div class="col-md-3 hidden-sm hidden-xs">
+            &nbsp;
+          </div>
+          {% endif %}
+          <div class="col-md-9">
+            <div class="box">
+              <div class="clearfix">
+                <h3 class="pull-left">{{ geo_zone }}</h3>
+                <a role="button" class="btn btn-link pull-right edit" onclick="toggleGeoZone({{ geo_zone_id }});">{{ text.button_edit }}</a>
+              </div>
+              <div id="shipping-{{ geo_zone_id }}" {% if data.shipping[geo_zone_id].rates is empty %}style="display: none;"{% endif %}>
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-rate-type"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_type }}">{{ text.entry_rate_type }}</span></label>
+                  <div class="col-md-9">
+                    <div class="input-group">
+                      <select name="shipping[{{ geo_zone_id }}][rate_type]" id="shipping-{{ geo_zone_id }}-rate-type" class="form-control" onclick="toggleRateType({{ geo_zone_id }});">
+                      {% for key, value in rate_types %}
+                        {% if value %}
+                          <optgroup label="{{ text['text_rate_group_'~key] }}">
+                          {% for param_key, param in value %}
+                            {% if data.shipping[geo_zone_id].rate_type and param_key == data.shipping[geo_zone_id].rate_type %}
+                              <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                            {% else %}
+                              <option value="{{ param_key }}">{{ param }}</option>
+                            {% endif %}
+                          {% endfor %}
+                          </optgroup>
                         {% endif %}
                       {% endfor %}
-                      </optgroup>
-                    {% endif %}
-                  {% endfor %}
-                  </select>
-                  <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalRateType" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                      </select>
+                      <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalRateType" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div id="shipping-{{ geo_zone_id }}-shipping-factor" class="row mb-3" {% if not data.shipping[geo_zone_id].rate_type or 'dim_weight' in data.shipping[geo_zone_id].rate_type %}style="display: none;"{% endif %}>
-              <label class="col-sm-2 col-form-label" for="shipping-{{ geo_zone_id }}-shipping-factor"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_shipping_factor }}">{{ text.entry_shipping_factor }}</span></label>
-              <div class="col-sm-10">
-                <div class="input-group">
-                  <input type="text" name="shipping[{{ geo_zone_id }}][shipping_factor]" id="shipping-{{ geo_zone_id }}-shipping-factor" class="form-control" value="{{ data.shipping[geo_zone_id].shipping_factor ? data.shipping[geo_zone_id].shipping_factor : '' }}" />
-                  <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalShippingFactor" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                <div id="shipping-{{ geo_zone_id }}-shipping-factor" class="form-group" {% if not data.shipping[geo_zone_id].rate_type or 'dim_weight' in data.shipping[geo_zone_id].rate_type %}style="display: none;"{% endif %}>
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-shipping-factor"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_shipping_factor }}">{{ text.entry_shipping_factor }}</span></label>
+                  <div class="col-md-9">
+                    <div class="input-group">
+                      <input type="text" name="shipping[{{ geo_zone_id }}][shipping_factor]" id="shipping-{{ geo_zone_id }}-shipping-factor" class="form-control" value="{{ data.shipping[geo_zone_id].shipping_factor ? data.shipping[geo_zone_id].shipping_factor : '' }}" />
+                      <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalShippingFactor" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                    </div>
+                    <span id="error-shipping-{{ geo_zone_id }}-shipping-factor" class="rate-error" style="display: none;"></span>
+                  </div>
                 </div>
-                <span id="error-shipping-{{ geo_zone_id }}-shipping-factor" class="rate-error" style="display: none;"></span>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label class="col-sm-2 col-form-label" for="shipping-{{ geo_zone_id }}-currency"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_currency }}">{{ text.entry_currency }}</span></label>
-              <div class="col-sm-10">
-                <select name="shipping[{{ geo_zone_id }}][currency]" id="shipping-{{ geo_zone_id }}-currency" class="form-select" onchange="toggleCurrency({{ geo_zone_id }});">
-                  {% set current_currency = data.shipping[geo_zone_id].currency ? data.shipping[geo_zone_id].currency : config_currency %}
-                  {% for currency in currencies %}
-                    {% if currency.code == current_currency %}
-                    <option value="{{ currency.code }}" selected="selected">{{ currency.title }}</option>
-                    {% else %}
-                    <option value="{{ currency.code }}">{{ currency.title }}</option>
-                    {% endif %}
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-            <div id="shipping-{{ geo_zone_id }}-rates" class="row mb-3" {% if data.shipping[geo_zone_id].rate_type and ('cart_' in data.shipping[geo_zone_id].rate_type or 'product_' in data.shipping[geo_zone_id].rate_type) %}style="display: none;"{% endif %}>
-              <label class="col-sm-2 col-form-label">{{ text.entry_rates }} <a role="button" data-bs-toggle="modal" data-bs-target="#modalRates" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></label>
-              <div class="col-sm-10">
-                <table id="shipping-{{ geo_zone_id }}" class="rate-rows table table-responsive table-hover">
+                <div class="form-group">
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-currency"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_rate_currency }}">{{ text.entry_currency }}</span></label>
+                  <div class="col-md-9">
+                    <select name="shipping[{{ geo_zone_id }}][currency]" id="shipping-{{ geo_zone_id }}-currency" class="form-control" onchange="toggleCurrency({{ geo_zone_id }});">
+                      {% set current_currency = data.shipping[geo_zone_id].currency ? data.shipping[geo_zone_id].currency : config_currency %}
+                      {% for currency in currencies %}
+                        {% if currency.code == current_currency %}
+                        <option value="{{ currency.code }}" selected="selected">{{ currency.title }}</option>
+                        {% else %}
+                        <option value="{{ currency.code }}">{{ currency.title }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div id="shipping-{{ geo_zone_id }}-rates" class="form-group" {% if data.shipping[geo_zone_id].rate_type and ('cart_' in data.shipping[geo_zone_id].rate_type or 'product_' in data.shipping[geo_zone_id].rate_type) %}style="display: none;"{% endif %}>
+                  <label class="control-label col-md-3">{{ text.entry_rates }} <a role="button" data-bs-toggle="modal" data-bs-target="#modalRates" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></label>
+                  <div class="col-md-9">
+                    <table id="shipping-{{ geo_zone_id }}" class="rate-rows table table-responsive table-hover">
                       <thead>
                         <tr>
                           <th>{{ text.column_rates_max }} <span class="shipping-{{ geo_zone_id }}-rate-unit"></span></th>
@@ -223,9 +246,9 @@
                     <span id="error-shipping-{{ geo_zone_id }}-rates" class="rate-error" style="display: none;"></span>
                   </div>
                 </div>
-                <div id="shipping-{{ geo_zone_id }}-shipping-method" class="row mb-3" {% if not data.shipping[geo_zone_id].rate_type or ('cart_' not in data.shipping[geo_zone_id].rate_type and 'product_' not in data.shipping[geo_zone_id].rate_type) %}style="display: none;"{% endif %}>
-                  <label class="col-sm-2 col-form-label" for="shipping-{{ geo_zone_id }}-shipping-method"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_shipping_method }}">{{ text.entry_shipping_method }}</span></label>
-                  <div class="col-sm-10">
+                <div id="shipping-{{ geo_zone_id }}-shipping-method" class="form-group" {% if not data.shipping[geo_zone_id].rate_type or ('cart_' not in data.shipping[geo_zone_id].rate_type and 'product_' not in data.shipping[geo_zone_id].rate_type) %}style="display: none;"{% endif %}>
+                  <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-shipping-method"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_shipping_method }}">{{ text.entry_shipping_method }}</span></label>
+                  <div class="col-md-9">
                     <input type="text" name="shipping[{{ geo_zone_id }}][shipping_method]" id="shipping-{{ geo_zone_id }}-shipping-method" class="form-control" value="{{ data.shipping[geo_zone_id].shipping_method ? data.shipping[geo_zone_id].shipping_method : '' }}" placeholder="{{ text.placeholder_shipping_method }}" />
                     <span id="error-shipping-{{ geo_zone_id }}-shipping-method" class="rate-error" style="display: none;"></span>
                   </div>
@@ -233,10 +256,10 @@
                 <div class="text-center">
                   <a role="button" class="btn btn-link" onclick="toggleAdvancedOptions({{ geo_zone_id }});">{{ text.button_advanced_options }}</a>
                 </div>
-                <div id="advanced-options-{{ geo_zone_id }}" class="as-options" style="display: none;">
-                  <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label" for="shipping-{{ geo_zone_id }}-final-cost"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_final_cost }}">{{ text.entry_final_cost }}</span></label>
-                    <div class="col-sm-10">
+                <div id="advanced-options-{{ geo_zone_id }}" class="bg-info" style="display: none;">
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-final-cost"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_final_cost }}">{{ text.entry_final_cost }}</span></label>
+                    <div class="col-md-9">
                       <div class="input-group">
                         <select name="shipping[{{ geo_zone_id }}][final_cost]" id="shipping-{{ geo_zone_id }}-final-cost" class="form-control">
                           {% for param_key, param in final_cost %}
@@ -251,9 +274,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label">{{ text.entry_split }} <a role="button" data-bs-toggle="modal" data-bs-target="#modalSplitPackage" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></label>
-                    <div class="col-sm-10">
+                  <div class="form-group">
+                    <label class="control-label col-md-3">{{ text.entry_split }} <a role="button" data-bs-toggle="modal" data-bs-target="#modalSplitPackage" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></label>
+                    <div class="col-md-9">
                       <input type="hidden" name="shipping[{{ geo_zone_id }}][split]" value="{{ data.shipping[geo_zone_id].split ? data.shipping[geo_zone_id].split : 0 }}" />
                       <div class="btn-group toggle" role="group">
                         {% if data.shipping[geo_zone_id].split %}
@@ -266,95 +289,109 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_cost }}">{{ text.entry_cost }}</span></label>
-                    <div class="col-sm-10 d-flex gap-2">
-                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][min]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.min ? data.shipping[geo_zone_id].cost.min : '' }}" placeholder="{{ text.placeholder_cost_min }}" />
-                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][max]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.max ? data.shipping[geo_zone_id].cost.max : '' }}" placeholder="{{ text.placeholder_cost_max }}" />
-                      <input type="text" name="shipping[{{ geo_zone_id }}][cost][add]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.add ? data.shipping[geo_zone_id].cost.add : '' }}" placeholder="{{ text.placeholder_cost_add }}" />
+                  <div class="form-group">
+                    <label class="control-label col-md-3"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_cost }}">{{ text.entry_cost }}</span></label>
+                    <div class="col-md-9">
+                      <div class="d-flex gap-2">
+                        <input type="text" name="shipping[{{ geo_zone_id }}][cost][min]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.min ? data.shipping[geo_zone_id].cost.min : '' }}" placeholder="{{ text.placeholder_cost_min }}" />
+                        <input type="text" name="shipping[{{ geo_zone_id }}][cost][max]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.max ? data.shipping[geo_zone_id].cost.max : '' }}" placeholder="{{ text.placeholder_cost_max }}" />
+                        <input type="text" name="shipping[{{ geo_zone_id }}][cost][add]" class="form-control" value="{{ data.shipping[geo_zone_id].cost.add ? data.shipping[geo_zone_id].cost.add : '' }}" placeholder="{{ text.placeholder_cost_add }}" />
+                      </div>
                     </div>
                   </div>
-                  <div class="row mb-3">
-                    <label class="col-sm-2 col-form-label" for="shipping-{{ geo_zone_id }}-freight-fee"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_freight_fee }}">{{ text.entry_freight_fee }}</span></label>
-                    <div class="col-sm-10">
+                  <div class="form-group">
+                    <label class="control-label col-md-3" for="shipping-{{ geo_zone_id }}-freight-fee"><span data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_freight_fee }}">{{ text.entry_freight_fee }}</span></label>
+                    <div class="col-md-9">
                       <input type="text" name="shipping[{{ geo_zone_id }}][freight_fee]" id="shipping-{{ geo_zone_id }}-freight-fee" value="{{ data.shipping[geo_zone_id].freight_fee ? data.shipping[geo_zone_id].freight_fee : '' }}" class="form-control" placeholder="{{ text.placeholder_freight_fee }}" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
         {% set x = x + 1 %}
         {% endfor %}
 
-        <div class="as-section-title mb-3 mt-4 pb-2">{{ text.heading_rate_ocapps }}</div>
-
-        <div class="row mb-3">
-          <div class="col-sm-12">
-            <select name="ocapps_cost" class="form-control" {% if not ocapps_integration %} disabled="disabled"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_ocapps_cost }}">
-              {% for param_key, param in option_ocapps_cost %}
-                {% if param_key == data.ocapps_cost %}
-                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
-                {% else %}
-                  <option value="{{ param_key }}">{{ param }}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_ocapps }}</h2>
           </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-sm-12">
-            <select name="ocapps_requirement" class="form-control" {% if not ocapps_integration %} disabled="disabled"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_ocapps_requirement }}">
-              {% for param_key, param in option_ocapps_requirement %}
-                {% if param_key == data.ocapps_requirement %}
-                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
-                {% else %}
-                  <option value="{{ param_key }}">{{ param }}</option>
-                {% endif %}
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-        {% if not ocapps_integration %}
-        <div class="as-notice">{{ text.text_ocapps }}</div>
-        {% endif %}
-
-        <div class="as-section-title mb-3 mt-4 pb-2">{{ text.heading_rate_requirements }}</div>
-
-        <div class="row mb-3">
-          <div class="col-sm-10 offset-sm-2">
-            <div class="input-group">
-              <select name="requirement_match" class="form-control">
-                {% for param_key, param in requirement_match %}
-                  {% if param_key == data.requirement_match %}
-                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
-                  {% else %}
-                  <option value="{{ param_key }}">{{ param }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-              <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalRequirementMatch" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+          <div class="col-md-9">
+            <div class="box">
+              <div class="form-group">
+                <div class="col-md-12">
+                  <select name="ocapps_cost" class="form-control" {% if not ocapps_integration %} disabled="disabled"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_ocapps_cost }}">
+                    {% for param_key, param in option_ocapps_cost %}
+                      {% if param_key == data.ocapps_cost %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                      {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-12">
+                  <select name="ocapps_requirement" class="form-control" {% if not ocapps_integration %} disabled="disabled"{% endif %} data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ text.tooltip_ocapps_requirement }}">
+                    {% for param_key, param in option_ocapps_requirement %}
+                      {% if param_key == data.ocapps_requirement %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                      {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              {% if not ocapps_integration %}
+              <div class="bg-info text-center" style="padding: 20px;">{{ text.text_ocapps }}</div>
+              {% endif %}
             </div>
           </div>
         </div>
-        <div class="row mb-3">
-          <div class="col-sm-10 offset-sm-2">
-            <div class="input-group">
-              <select name="requirement_cost" class="form-control">
-                {% for param_key, param in requirement_cost %}
-                  {% if param_key == data.requirement_cost %}
-                  <option value="{{ param_key }}" selected="selected">{{ param }}</option>
-                  {% else %}
-                  <option value="{{ param_key }}">{{ param }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-              <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalRequirementCost" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
-            </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <h2>{{ text.heading_rate_requirements }}</h2>
           </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-sm-10 offset-sm-2">
-            <table id="requirement-rows" class="table table-responsive table-hover">
+          <div class="col-md-9">
+            <div class="box">
+              <div class="form-group">
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <select name="requirement_match" class="form-control">
+                      {% for param_key, param in requirement_match %}
+                        {% if param_key == data.requirement_match %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                        {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                    <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalRequirementMatch" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-12">
+                  <div class="input-group">
+                    <select name="requirement_cost" class="form-control">
+                      {% for param_key, param in requirement_cost %}
+                        {% if param_key == data.requirement_cost %}
+                        <option value="{{ param_key }}" selected="selected">{{ param }}</option>
+                        {% else %}
+                        <option value="{{ param_key }}">{{ param }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                    <span class="input-group-addon"><a role="button" data-bs-toggle="modal" data-bs-target="#modalRequirementCost" rel="tooltip" data-bs-placement="bottom" title="{{ text.text_example }}"><i class="fa fa-info-circle"></i></a></span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <table id="requirement-rows" class="table table-responsive table-hover">
                   <thead>
                     <tr>
                       <th>{{ text.column_requirement_type }}</th>
@@ -452,10 +489,12 @@
                   </tfoot>
                 </table>
               </div>
+              <div class="text-center">
+                <div class="as-checkbox"><input type="checkbox" name="fail_method" id="fail-method" value="1" {% if data.fail_method %}checked="checked"{% endif %}><label for="fail-method">{{ text.entry_fail_method }}</label></div>
+              </div>
             </div>
-            <div class="text-center">
-              <div class="as-checkbox"><input type="checkbox" name="fail_method" id="fail-method" value="1" {% if data.fail_method %}checked="checked"{% endif %}><label for="fail-method">{{ text.entry_fail_method }}</label></div>
-            </div>
+          </div>
+        </div>
 
         <div class="row">
             <div class="col-md-3 hidden-sm hidden-xs">&nbsp;</div>
@@ -467,7 +506,6 @@
               <a class="btn btn-oca" role="button" onclick="changes = false; $('#form').submit();">{{ text.button_save }}</a>
             </div>
           </div>
-        </div>
       </form>
     </div>
   </div>
