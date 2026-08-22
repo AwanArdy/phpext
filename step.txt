@@ -1,0 +1,137 @@
+===============================================================================
+STEP-BY-STEP ALUR ADVANCED SHIPPING — DARI PENGISIAN SAMPAI CHECKOUT
+Sesuai kronologi konfigurasi Anda (rate berbasis Quantity, geo zone Indonesia,
+alamat uji: Surabaya, Jawa Timur)
+===============================================================================
+
+BAGIAN 1 — INSTALASI & AKTIVASI EKSTENSI
+-------------------------------------------------------------------------------
+
+Step 1. Container start
+        docker-entrypoint.sh otomatis mendaftarkan ekstensi ke database:
+        - oc_extension_install (metadata paket)
+        - oc_extension_path    (daftar path controller/model/view/language)
+        - oc_extension         (penanda "ter-install" agar tombol Edit tidak
+                                tampil pudar/blurred di Extensions -> Shipping)
+        - tabel advanced_shipping + setting default (backup=1, sort_order=1)
+
+Step 2. Buka Admin -> Extensions -> Extensions -> pilih type "Shipping"
+        Pastikan baris Advanced Shipping:
+        - Status : Disabled (normal, belum diaktifkan)
+        - Tombol Edit (pensil) aktif berwarna biru
+
+Step 3. Klik Edit (pensil) -> tab Settings:
+        [PENTING] Status    = Enabled      <-- tanpa ini quote TIDAK PERNAH muncul
+        [PENTING] Test Mode = OFF          <-- jika ON, quote hanya muncul untuk
+                                            customer bernama "advanced shipping"
+        Sort Order = angka urutan tampil (mis. 1)
+        Opsional : Debug = ON (untuk troubleshooting, lihat Bagian 4)
+
+BAGIAN 2 — PENGISIAN RATE BERBASIS QUANTITY (kronologi Anda)
+-------------------------------------------------------------------------------
+
+Step 4. Tab Rates -> klik Add (tambah rate baru):
+        - Description : nama internal rate (mis. "Ongkir Jumlah Barang")
+        - Name        : nama yang tampil di checkout (multi bahasa)
+        - Status      = ON            <-- rate dengan status=0 tidak ikut dihitung
+
+Step 5. Tentukan zona cakupan pada KOLOM GEO ZONE di rate editor.
+        Kolom yang tersedia mengikuti daftar geo zone toko + "All Other Zones".
+        Kasus Anda:
+        - Geo zone "Indonesia" dibuat mencakup satu negara penuh
+          (oc_zone_to_geo_zone: country_id=100, zone_id=0)
+          -> semua alamat Indonesia termasuk Surabaya masuk kolom INI.
+        - ATAU jika geo zone hanya memuat provinsi tertentu dan Jawa Timur
+          TIDAK termasuk, alamat jatuh ke kolom "All Other Zones" (geo_zone_id=0)
+          -> biaya HARUS diisi di kolom itu.
+
+Step 6. Di kolom geo zone yang benar:
+        - Rate Type = Cart Quantity (total qty keranjang)
+                      atau Product Quantity (per produk)
+        - Isi TABEL RATES (wajib, minimal 1 baris):
+              Max      = batas atas qty (angka terakhir boleh "~" = sisanya)
+              Cost     = biaya (angka atau % dari subtotal)
+              Per      = dibagi per berapa qty (0/1 = tidak dibagi)
+          Contoh:
+              Max=3  Cost=10000  Per=0
+              Max=~  Cost=2000   Per=1     <- tiap qty tambahan Rp2.000
+        [PENTING] Tabel Max/Cost/Per kosong => rate dilewati diam-diam.
+
+Step 7. Simpan rate, pastikan muncul di daftar "Your Shipping Rates"
+        dengan kolom Status = On.
+
+BAGIAN 3 — PROSES CHECKOUT (APA YANG TERJADI DI BELAKANG LAYAR)
+-------------------------------------------------------------------------------
+
+Semua alur berikut ada di:
+catalog/model/shipping/advancedshipping.php -> getQuote()
+
+Step 8. Customer mengisi alamat: Surabaya, Jawa Timur, Indonesia,
+        lalu membuka halaman checkout. OpenCart memanggil getQuote($address).
+
+Step 9. Gerbang 1 — Test Mode (baris 96):
+        jika test mode ON dan nama customer != "advanced shipping"
+        -> return [] (quote disembunyikan). <-- penyebab tersering!
+
+Step 10. Gerbang 2 — Status ekstensi (baris 104):
+         shipping_advancedshipping_status harus = 1.
+
+Step 11. Ambil daftar rate (baris 654-669):
+         SELECT * FROM advanced_shipping WHERE status='1'
+         (di-cache bila opsi Cache menyala -> klik Clear Cache setelah edit).
+
+Step 12. Cocokkan GEO ZONE alamat (getGeoZones, baris 704-728):
+         dicari baris oc_zone_to_geo_zone yang cocok dengan
+         country_id + zone_id alamat (atau zone_id=0 = satu negara).
+         Hasilnya bisa: "Indonesia" ATAU "All Other Zones".
+
+Step 13. Filter PRODUK (getProducts, baris 730-780):
+         hanya produk dengan "Requires Shipping = Yes" (tab Data produk)
+         yang dihitung. Keranjang kosong dari produk tsb -> method hilang.
+
+Step 14. Cek REQUIREMENTS rate (jika diisi): product/customer/cart/other.
+         Gagal match -> rate dilewati (kecuali Fail Method dikonfigurasi).
+
+Step 15. Hitung CART (calculateCart, baris 904-996):
+         untuk Cart Quantity -> menjumlah seluruh qty produk layak kirim.
+
+Step 16. Cari biaya pada tabel Max/Cost/Per
+         (getRateSingle baris 1220 / getRateCumulative baris 1236):
+         qty dicocokkan ke baris pertama yang Max >= qty;
+         Cost % dihitung dari subtotal; Per>0 membagi per kelipatan.
+
+Step 17. Terapkan Min/Max/Add/Freight Fee (jika diisi), konversi mata uang,
+         lalu quote dibentuk (getQuoteData), diurutkan sesuai opsi
+         Sort Quotes, dan dikirim sebagai shipping method
+         "Advanced Shipping" ke halaman checkout.
+
+Step 18. Customer memilih metode -> biaya masuk ke total pesanan.
+
+BAGIAN 4 — JIKA RATE TIDAK MUNCUL DI CHECKOUT (CHECKLIST SESUAI KRONOLOGI)
+-------------------------------------------------------------------------------
+
+[ ] 1. Test Mode OFF?                                  (Step 3  / Step 9)
+[ ] 2. Status ekstensi Enabled?                        (Step 3  / Step 10)
+[ ] 3. Rate Status = On dan tabel Max/Cost/Per terisi? (Step 6-7 / Step 11,16)
+[ ] 4. Biaya diisi di kolom geo zone yang BENAR?
+       Cek kecocokan zona alamat:
+         SELECT g.name, z2g.country_id, z2g.zone_id
+         FROM oc_geo_zone g
+         JOIN oc_zone_to_geo_zone z2g ON z2g.geo_zone_id=g.geo_zone_id
+         WHERE g.name LIKE '%indonesia%';
+       zone_id=0 berarti satu negara penuh (Surabaya ikut).   (Step 5/12)
+[ ] 5. Semua produk di keranjang "Requires Shipping = Yes"? (Step 13)
+[ ] 6. Clear Cache sudah diklik setelah edit rate?          (Step 11)
+
+VERIFIKASI VIA DEBUG LOG (paling cepat melihat titik gagal):
+  Settings -> Debug = ON -> ulangi checkout ->
+  buka system/storage/logs/advancedshipping.txt
+  Log menampilkan RateID, cartGeoZones yang terdeteksi untuk alamat
+  Surabaya Anda, dan hasil tiap pengecekan.
+
+REFERENSI FILE
+-------------------------------------------------------------------------------
+  docker-entrypoint.sh                                   : registrasi & auto-install
+  upload/extension/advancedshipping/admin/...            : halaman admin ekstensi
+  upload/extension/advancedshipping/catalog/model/shipping/advancedshipping.php
+                                                         : mesin perhitungan checkout
