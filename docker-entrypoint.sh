@@ -70,9 +70,10 @@ else
     echo "✅ OpenCart sudah terinstall, skip instalasi."
 fi
 
-# Daftarkan Advanced Shipping ke OpenCart 4 (extension_install + extension_path).
+# Daftarkan Advanced Shipping ke OpenCart 4 (extension_install + extension_path)
+# lalu auto-install penuh: baris di tabel `extension` (agar tombol Edit tidak
+# tampil pudar/disabled), tabel rate, setting default, dan permission admin.
 # OC4 TIDAK scan filesystem — daftar Shipping hanya dari tabel extension_path.
-# Tanpa ini, file di extension/advancedshipping/ tidak akan muncul di admin.
 # Catatan: PHP ditulis via heredoc ke file temp agar single-quote di SQL tidak
 # merusak quoting bash (bug sebelumnya membuat container crash-loop).
 register_advanced_shipping() {
@@ -195,6 +196,103 @@ if (!$chk || $chk->num_rows === 0) {
     exit(1);
 }
 echo "OK: Shipping list will include Advanced Shipping.\n";
+
+// --- Auto-install (sama seperti klik Install di Extensions -> Shipping) ---
+// 1) Baris di tabel `extension` membuat tombol Edit aktif
+//    (tanpa ini, baris tampil pudar/blurred seperti disabled).
+$qExt = $m->query("SELECT * FROM `{$prefix}extension` WHERE `type` = 'shipping' AND `code` = '{$codeEsc}' LIMIT 1");
+if ($qExt && $qExt->num_rows === 0) {
+    $m->query(
+        "INSERT INTO `{$prefix}extension` SET " .
+        "`extension` = '{$codeEsc}', " .
+        "`type` = 'shipping', " .
+        "`code` = '{$codeEsc}'"
+    );
+    if ($m->error) {
+        fwrite(STDERR, "Insert extension failed: {$m->error}\n");
+        exit(1);
+    }
+    echo "Auto-install: shipping extension row added.\n";
+}
+
+// 2) Buat tabel rate (skema sama dengan model install()).
+$m->query(
+    "CREATE TABLE IF NOT EXISTS `{$prefix}advanced_shipping` (
+        `rate_id` INT(11) NOT NULL AUTO_INCREMENT,
+        `description` TEXT NOT NULL,
+        `status` TINYINT(1) NOT NULL DEFAULT 0,
+        `sort_order` INT(3) NOT NULL DEFAULT 0,
+        `group` TEXT NOT NULL,
+        `tax_class_id` INT(11) NOT NULL DEFAULT 0,
+        `total_type` TINYINT(1) NOT NULL DEFAULT 0,
+        `name` TEXT NOT NULL,
+        `shipping` LONGTEXT NOT NULL,
+        `origin` TEXT NOT NULL,
+        `geocode_lat` DECIMAL(20,8) NOT NULL DEFAULT 0.00000000,
+        `geocode_lng` DECIMAL(20,8) NOT NULL DEFAULT 0.00000000,
+        `ocapps_cost` TINYINT(1) NOT NULL DEFAULT 0,
+        `ocapps_requirement` TINYINT(1) NOT NULL DEFAULT 0,
+        `requirement_match` VARCHAR(10) NOT NULL DEFAULT 'any',
+        `requirement_cost` VARCHAR(10) NOT NULL DEFAULT 'every',
+        `requirements` LONGTEXT NOT NULL,
+        `fail_method` TINYINT(1) NOT NULL DEFAULT 0,
+        `date_added` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        `date_modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+        `administrator` VARCHAR(50) NOT NULL DEFAULT '',
+        PRIMARY KEY (`rate_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+);
+
+// 3) Setting default dari controller install() (flag backup)
+//    + sort_order agar kolom "Sort Order" di Extensions -> Shipping tidak kosong.
+$settingDefaults = [
+    "shipping_{$codeEsc}_backup"     => '1',
+    "shipping_{$codeEsc}_sort_order" => '1',
+];
+foreach ($settingDefaults as $sKey => $sVal) {
+    $sKeyEsc = $m->real_escape_string($sKey);
+    $qSet = $m->query("SELECT * FROM `{$prefix}setting` WHERE `code` = 'shipping_{$codeEsc}' AND `key` = '{$sKeyEsc}' LIMIT 1");
+    if ($qSet && $qSet->num_rows === 0) {
+        $m->query(
+            "INSERT INTO `{$prefix}setting` SET " .
+            "`store_id` = 0, " .
+            "`code` = 'shipping_{$codeEsc}', " .
+            "`key` = '{$sKeyEsc}', " .
+            "`value` = '{$sVal}', " .
+            "`serialized` = 0"
+        );
+        echo "Auto-install: setting {$sKey} = {$sVal} seeded.\n";
+    }
+}
+
+// 4) Permission access+modify untuk admin (user_group_id = 1),
+//    sama dengan model_user_user_group->addPermission().
+$route = 'extension/' . $code . '/shipping/' . $code;
+$qGroup = $m->query("SELECT * FROM `{$prefix}user_group` WHERE `user_group_id` = '1' LIMIT 1");
+if ($qGroup && $qGroup->num_rows > 0) {
+    $groupRow  = $qGroup->fetch_assoc();
+    $perm      = json_decode($groupRow['permission'] ?? '', true);
+    if (!is_array($perm)) {
+        $perm = [];
+    }
+    $changed = false;
+    foreach (['access', 'modify'] as $type) {
+        if (!isset($perm[$type]) || !is_array($perm[$type])) {
+            $perm[$type] = [];
+        }
+        if (!in_array($route, $perm[$type], true)) {
+            $perm[$type][] = $route;
+            $changed = true;
+        }
+    }
+    if ($changed) {
+        $permEsc = $m->real_escape_string((string)json_encode($perm));
+        $m->query("UPDATE `{$prefix}user_group` SET `permission` = '{$permEsc}' WHERE `user_group_id` = '1'");
+        echo "Auto-install: permissions granted for {$route}.\n";
+    }
+}
+
+echo "OK: Advanced Shipping fully installed.\n";
 PHP
 
     # Jangan biarkan gagal registrasi menghentikan Apache (set -e).

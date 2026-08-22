@@ -253,10 +253,21 @@ ul li {
 	color: var(--as-white);
 }
 
+/* Bootstrap 5.3 paints each cell with --bs-table-bg (white),
+   so the brand color must be applied at the <th> level */
 .as-rates thead th,
 #combinations thead th {
 	font-weight: normal;
 	border-bottom: 0;
+	background-color: var(--as-brand);
+	--bs-table-bg: var(--as-brand);
+	color: var(--as-white);
+}
+
+.as-rates thead tr#filter th {
+	background-color: var(--as-muted);
+	--bs-table-bg: var(--as-muted);
+	color: var(--as-text);
 }
 
 .as-rates tbody tr {
