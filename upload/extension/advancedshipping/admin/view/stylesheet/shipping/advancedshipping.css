@@ -41,6 +41,7 @@ html, body {
 
 #as-header .row {
 	margin-bottom: 0;
+	align-items: center;
 }
 
 #as-header .btn {
@@ -348,29 +349,36 @@ ul li {
 	color: var(--as-white);
 }
 
-/* Delete buttons — OC3 look (white, subtle) instead of BS5 red */
+/* Delete buttons — solid red */
 .btn-danger,
 .btn-danger:hover,
 .btn-danger:focus,
 .btn-danger:active,
 .btn-danger.active {
-	color: #333;
-	background-color: #fff;
-	border-color: #ccc;
+	color: var(--as-white);
+	background-color: var(--as-danger);
+	border-color: #8f3a38;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active {
+	background-color: #8f3a38;
+	border-color: #7c3230;
 }
 
 .btn-danger:disabled,
 .btn-danger.disabled,
 .btn-danger[disabled] {
-	color: #777;
-	background-color: #fff;
-	border-color: #ccc;
-	opacity: 0.65;
+	color: var(--as-white);
+	background-color: #d9908f;
+	border-color: #d9908f;
+	opacity: 1;
 	pointer-events: none;
 }
 
 .btn-danger i {
-	color: var(--as-danger);
+	color: var(--as-white);
 }
 
 .buttons {
@@ -381,8 +389,13 @@ ul li {
 .form-group {
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
 	padding-top: 0;
 	margin-bottom: 15px;
+}
+
+.form-group > div[class*="col-"] {
+	padding-left: 15px;
 }
 
 .form-group:last-child {
@@ -808,7 +821,7 @@ label.control-label {
 	padding-top: 7px;
 	margin-bottom: 0;
 	text-align: right;
-	font-weight: normal;
+	font-weight: 700;
 }
 
 @media (max-width: 767.98px) {

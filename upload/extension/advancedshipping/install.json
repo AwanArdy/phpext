@@ -1,6 +1,6 @@
 {
     "name": "Advanced Shipping",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "author": "OpenCart Addons",
     "link": "",
     "description": "Advanced Shipping extension for OpenCart 4 - Calculate shipping costs based on weight, quantity, distance, dimensions, and more with flexible rate rules and requirement conditions.",

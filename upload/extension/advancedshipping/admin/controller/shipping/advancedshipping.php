@@ -5,7 +5,7 @@ namespace Opencart\Admin\Controller\Extension\Advancedshipping\Shipping;
 
 class Advancedshipping extends \Opencart\System\Engine\Controller {
 	private array $error = [];
-	private string $version = '2.0.1';
+	private string $version = '2.0.2';
 	private string $type = 'shipping';
 	private string $extension = 'advancedshipping';
 	private string $route = 'extension/advancedshipping/shipping/advancedshipping';
