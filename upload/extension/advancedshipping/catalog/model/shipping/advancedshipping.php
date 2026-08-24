@@ -744,10 +744,10 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 					$lengthUnit = 'length_class_id';
 					$weightUnit = 'weight_class_id';
 
-					$lengthVal = $this->length->convert((float)$product['length'], (string)($product[$lengthUnit] ?? 0), (string)$this->config->get('config_length_class_id'));
-					$widthVal  = $this->length->convert((float)$product['width'], (string)($product[$lengthUnit] ?? 0), (string)$this->config->get('config_length_class_id'));
-					$heightVal = $this->length->convert((float)$product['height'], (string)($product[$lengthUnit] ?? 0), (string)$this->config->get('config_length_class_id'));
-					$weightVal = $this->weight->convert((float)$product['weight'], (string)($product[$weightUnit] ?? 0), (string)$this->config->get('config_weight_class_id')) / $qty;
+					$lengthVal = $this->length->convert((float)$product['length'], (int)($product[$lengthUnit] ?? 0), (int)$this->config->get('config_length_class_id'));
+					$widthVal  = $this->length->convert((float)$product['width'], (int)($product[$lengthUnit] ?? 0), (int)$this->config->get('config_length_class_id'));
+					$heightVal = $this->length->convert((float)$product['height'], (int)($product[$lengthUnit] ?? 0), (int)$this->config->get('config_length_class_id'));
+					$weightVal = $this->weight->convert((float)$product['weight'], (int)($product[$weightUnit] ?? 0), (int)$this->config->get('config_weight_class_id')) / $qty;
 
 					$products[uniqid((string)rand(), true)] = [
 						'key'          => $product['key'] ?? '',
