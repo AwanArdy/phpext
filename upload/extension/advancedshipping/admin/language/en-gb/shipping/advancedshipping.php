@@ -157,6 +157,7 @@ $_['text_error_rate_postcode_range_formatting'] = 'Postal Code Range "%s" Is Not
 $_['text_error_rate_postcode_formatting']   = 'Postal Code "%s" Is Not A Valid UK Format.';
 $_['text_error_support']                    = 'Whoops! It looks like you didn\'t complete all the fields below.';
 $_['text_error_debug']                      = 'Uh oh! Your debug log exceeds the maximum allowed file size.';
+$_['text_error_import_skipped']             = 'The following CSV row(s) were skipped because they failed validation: %s.';
 
 // Warning
 $_['text_warning_unsaved_changes']          = 'If you leave this page, all unsaved changes will be lost. Are you sure you want to leave this page?';

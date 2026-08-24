@@ -930,12 +930,13 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 			$this->load->model('extension/advancedshipping/shipping/advancedshipping');
 
 			$changes  = ['added' => 0, 'updated' => 0];
+			$skipped  = [];
 			$csvInfo  = $this->csv();
 			$row      = 0;
 			$fields   = [];
 
 			if (($handle = fopen($file, 'r')) !== false) {
-				while (($data = fgetcsv($handle, 4000, ',')) !== false) {
+				while (($data = fgetcsv($handle, null, ',')) !== false) {
 					if ($row > $csvInfo['row_offset']) {
 						$col = $csvInfo['col_offset'];
 						$rateInfo = [];
@@ -943,6 +944,13 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 							$val = isset($data[$col]) ? $this->value($data[$col]) : '';
 							$col++;
 							$rateInfo[trim($field)] = $val;
+						}
+
+						$errors = $this->validateRate($rateInfo);
+						if ($errors) {
+							$skipped[] = $row + 1;
+							$row++;
+							continue;
 						}
 
 						$rateId = (int)($rateInfo['rate_id'] ?? 0);
@@ -965,6 +973,12 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 			}
 
 			$this->session->data['success'] = sprintf($this->language->get('text_success_import'), $changes['added'], $changes['updated']);
+
+			if ($skipped) {
+				$this->session->data['error'] = sprintf($this->language->get('text_error_import_skipped'), implode(', ', $skipped));
+			}
+
+			$this->cache->delete($this->extension . '_rates');
 		} else {
 			$this->session->data['error'] = $this->language->get('text_error_import');
 		}

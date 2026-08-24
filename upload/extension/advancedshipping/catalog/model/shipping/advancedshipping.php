@@ -203,6 +203,8 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 							'other'    => $temp_requirements['other'] ?? [],
 						];
 
+						$matchMethod = (string)($rate['requirement_match'] ?? 'all');
+
 						if ($requirements['product'] || $requirements['customer'] || $requirements['other']) {
 							$requirement_status = [];
 
@@ -267,7 +269,6 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 								}
 							}
 
-							$matchMethod = (string)($rate['requirement_match'] ?? 'all');
 							if ($matchMethod === 'all' && in_array(false, $requirement_status, true)) {
 								$status = false;
 							}
@@ -294,6 +295,7 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 									$shippingInfo = $rate['shipping'][$gzId];
 									$rateTypeSetting = (string)($shippingInfo['rate_type'] ?? '');
 									$cart_dist_calc = false;
+									$status = true;
 
 									if (in_array($rateTypeSetting, $this->rateTypes, true) && empty($shippingInfo['rates'])) {
 										$status = false;
@@ -429,8 +431,11 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 
 										// Convert Currency safely for OC4
 										if (in_array($rateTypeSetting, $this->rateTypes, true)) {
-											$rateCurrency = (string)($shippingInfo['currency'] ?? $this->config->get('config_currency'));
 											$configCurrency = (string)$this->config->get('config_currency');
+											$rateCurrency   = trim((string)($shippingInfo['currency'] ?? ''));
+											if ($rateCurrency === '') {
+												$rateCurrency = $configCurrency;
+											}
 											if ($rateCurrency !== $configCurrency) {
 												$cost = $this->convertCurrency($cost, $rateCurrency, $configCurrency);
 											}
@@ -1311,7 +1316,7 @@ class Advancedshipping extends \Opencart\System\Engine\Model {
 	}
 
 	private function convertCurrency(float $amount, string $from, string $to): float {
-		if ($from === $to) {
+		if ($from === '' || $to === '' || $from === $to) {
 			return $amount;
 		}
 
