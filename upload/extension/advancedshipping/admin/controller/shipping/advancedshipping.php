@@ -10,8 +10,6 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 	private string $extension = 'advancedshipping';
 	private string $route = 'extension/advancedshipping/shipping/advancedshipping';
 	private string $dbTable = 'advanced_shipping';
-	private string $href = 'https://www.opencartaddons.com/';
-	private string $email = 'contact@opencartaddons.com';
 	private bool $ocappsStatus = false;
 
 	public function index(): void {
@@ -51,14 +49,6 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$data['token'] = 'user_token=' . $this->session->data['user_token'];
 
 		$data['text']['text_footer'] = sprintf($data['text']['text_footer'] ?? 'Advanced Shipping v%s', $this->version);
-
-		// Demo check
-		$httpHost = $this->request->server['HTTP_HOST'] ?? '';
-		if ($httpHost !== '' && str_contains($httpHost, 'demo.opencartaddons.com')) {
-			$data['demo'] = $this->href . 'purchase/?platform=opencart';
-		} else {
-			$data['demo'] = false;
-		}
 
 		$data['debug_download'] = $this->link($this->route . '.downloadDebug');
 		$data['debug_clear']    = $this->link($this->route . '.clearDebug');
@@ -183,7 +173,6 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 		$this->load->model('localisation/language');
 		$data['languages'] = $this->model_localisation_language->getLanguages();
 		$data['ocapps_integration'] = $this->ocappsStatus;
-		$data['email'] = $this->config->get('config_email');
 
 		// OC4 extension assets live under /extension/{code}/admin/view/... (not admin/view/stylesheet/extension/...)
 		$this->document->addStyle('https://fonts.googleapis.com/css?family=Oswald:400,700');
@@ -1200,53 +1189,6 @@ class Advancedshipping extends \Opencart\System\Engine\Controller {
 
 		$this->session->data['success'] = $this->language->get('text_success_backup_clear');
 		$this->response->redirect($this->link($this->route));
-	}
-
-	public function support(): void {
-		$json = [];
-		$this->load->language($this->route);
-
-		if ($this->validate(true) && isset($this->request->post)) {
-			if (!empty($this->request->post['email']) && !empty($this->request->post['order_id']) && !empty($this->request->post['enquiry'])) {
-				$text  = "Extension: " . $this->language->get('text_name') . "\n";
-				$text .= "Version: " . $this->version . "\n";
-				$text .= defined('VERSION') ? "OpenCart Version: " . VERSION . "\n" : "OpenCart Version: N/A \n";
-				$text .= "Website: " . HTTP_CATALOG . "\n";
-				$text .= "Email: " . $this->request->post['email'] . "\n";
-				$text .= "Order ID: " . $this->request->post['order_id'] . "\n\n";
-				$text .= "Support Question:\n";
-				$text .= $this->request->post['enquiry'];
-
-				try {
-					$mailOption = [
-						'engine'        => $this->config->get('config_mail_engine') ?? 'mail',
-						'smtp_hostname' => $this->config->get('config_smtp_host'),
-						'smtp_username' => $this->config->get('config_smtp_username'),
-						'smtp_password' => $this->config->get('config_smtp_password'),
-						'smtp_port'     => $this->config->get('config_smtp_port'),
-						'smtp_timeout'  => $this->config->get('config_smtp_timeout'),
-					];
-					$mail = new \Opencart\System\Library\Mail($mailOption['engine'], $mailOption);
-					$mail->setTo($this->email);
-					$mail->setFrom((string)$this->request->post['email']);
-					$mail->setSender((string)$this->config->get('config_name'));
-					$mail->setSubject($this->language->get('text_name') . ' Support Request');
-					$mail->setText(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
-					$mail->send();
-				} catch (\Throwable $e) {
-					// Graceful exception catch for mail engine
-				}
-
-				$json['success'] = $this->language->get('text_success_support');
-			} else {
-				$json['error'] = $this->language->get('text_error_support');
-			}
-		} else {
-			$json['error'] = $this->language->get('text_error_not_valid');
-		}
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
 	}
 
 	private function link(string $route, string $params = ''): string {

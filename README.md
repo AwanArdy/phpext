@@ -844,9 +844,3 @@ extension/advancedshipping/
 ## 📄 Lisensi
 
 Copyright © 2011–2026 OpenCart Addons. All rights reserved.
-
----
-
-## 🆘 Support
-
-Jika membutuhkan bantuan, gunakan tab **Support** di halaman Advanced Shipping admin panel untuk mengirim pertanyaan langsung.

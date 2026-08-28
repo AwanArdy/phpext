@@ -27,9 +27,6 @@
               <button type="button" class="nav-link" id="tab-settings-btn" data-bs-target="#tab-settings" role="tab" aria-controls="tab-settings" aria-selected="false">{{ text.tab_settings }}</button>
             </li>
             <li class="nav-item" role="presentation">
-              <button type="button" class="nav-link" id="tab-support-btn" data-bs-target="#tab-support" role="tab" aria-controls="tab-support" aria-selected="false">{{ text.tab_support }}</button>
-            </li>
-            <li class="nav-item" role="presentation">
               <button type="button" class="btn btn-info as-help-btn" data-bs-toggle="modal" data-bs-target="#modalInfo" title="{{ text.modal_info_header }}"><i class="fa fa-question-circle"></i></button>
             </li>
           </ul>
@@ -322,44 +319,6 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="tab-support" class="tab-pane" role="tabpanel" aria-labelledby="tab-support-btn">
-          <div class="row">
-            <h2>{{ text.heading_support }}</h2>
-            <div class="box">
-              {{ text.help_support }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="box">
-              <form role="form" id="support" class="form-horizontal">
-                <div class="form-group">
-                  <label for="email" class="col-md-3 control-label">{{ text.entry_email }}</label>
-                  <div class="col-md-9">
-                    <input type="email" value="{{ email }}" name="email" id="email" class="form-control" disabled>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="order-id" class="col-md-3 control-label">{{ text.entry_order_id }}</label>
-                  <div class="col-md-9">
-                    <input type="text" name="order_id" id="order-id" class="form-control">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="enquiry" class="col-md-3 control-label">{{ text.entry_enquiry }}</label>
-                  <div class="col-md-9">
-                    <textarea name="enquiry" id="enquiry" class="form-control as-enquiry" placeholder="{{ text.placeholder_enquiry }}"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-md-12 text-right">
-                    <button type="button" class="btn btn-oca" id="supportSubmit" {% if demo %}disabled="disabled"{% endif %}>{{ text.button_submit }}</button>
-                  </div>
-                </div>
-              </form>
             </div>
           </div>
         </div>
@@ -761,35 +720,6 @@
       }
     });
   }
-//--></script>
-
-<script type="text/javascript"><!--
-  {% if not demo %}
-  $('#supportSubmit').bind('click', function() {
-    $.ajax({
-      url: 'index.php?route=extension/advancedshipping/shipping/advancedshipping.support&user_token={{ user_token }}',
-      data: $('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea').serialize(),
-      type: 'post',
-      dataType: 'json',
-      beforeSend: function() {
-        $('#supportSubmit').before('<i class="loading-small fa fa-spinner fa-spin fa-2x"></i>');
-      },
-      complete: function() {
-        $('.loading-small').remove();
-      },
-      success: function(json) {
-        $('.alert-success, .alert-danger').remove();
-        if (json['error']) {
-          $('#support').prepend('<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">'+ json['error'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-        }
-        if (json['success']) {
-          $('#support').prepend('<div class="alert alert-success alert-dismissible fade show text-center" role="alert">'+ json['success'] +' <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-          $('#support input[type=\'email\'], #support input[type=\'text\'], #support textarea').val('');
-        }
-      }
-    });
-  });
-  {% endif %}
 //--></script>
 
 {{ footer }}

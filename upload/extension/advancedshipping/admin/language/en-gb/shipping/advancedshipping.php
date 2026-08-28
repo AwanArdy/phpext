@@ -6,7 +6,6 @@ $_['heading_title']         = '<span style="color:#2563eb; font-weight:bold;">AD
 $_['heading_rates']         = 'Your Shipping Rates';
 $_['heading_combinations']  = 'Combine Shipping Rates';
 $_['heading_settings']      = 'General Settings';
-$_['heading_support']       = 'Support Request';
 $_['heading_rate_general']  = 'General Settings';
 $_['heading_rate_display']  = 'Display Settings';
 $_['heading_rate_cost']     = 'Calculate Shipping';
@@ -47,14 +46,12 @@ $_['placeholder_cost_max']           = 'Maximum Cost';
 $_['placeholder_cost_add']           = 'Additional Cost';
 $_['placeholder_freight_fee']        = 'Additional Fee';
 $_['placeholder_formula']            = 'SUM({A})';
-$_['placeholder_enquiry']            = 'Please include a detailed description of your shipping requirements';
 $_['placeholder_gmaps_api_key']      = 'AIzaSy...';
 
 // Tabs
 $_['tab_rate']              = 'Shipping Rates';
 $_['tab_combination']       = 'Combine Shipping Rates';
 $_['tab_settings']          = 'Settings';
-$_['tab_support']           = 'Support';
 
 // Columns
 $_['column_description']     = 'Description';
@@ -114,11 +111,6 @@ $_['entry_ocapps_status']    = 'Per Product Shipping Integration';
 $_['entry_display_value']    = 'Display Cart Value';
 $_['entry_gmaps_api_key']    = 'Google Maps API Key';
 
-// Support Form
-$_['entry_email']            = 'Email Address';
-$_['entry_order_id']         = 'Order ID';
-$_['entry_enquiry']          = 'Enquiry';
-
 // Rate Settings
 $_['entry_description']      = 'Description';
 $_['entry_rate_status']      = 'Status';
@@ -155,7 +147,6 @@ $_['text_error_rate_shipping_method']       = 'Please Specify A Shipping Method'
 $_['text_error_rate_requirement']           = 'Please Specify A Requirement Value.';
 $_['text_error_rate_postcode_range_formatting'] = 'Postal Code Range "%s" Is Not A Valid Format.';
 $_['text_error_rate_postcode_formatting']   = 'Postal Code "%s" Is Not A Valid UK Format.';
-$_['text_error_support']                    = 'Whoops! It looks like you didn\'t complete all the fields below.';
 $_['text_error_debug']                      = 'Uh oh! Your debug log exceeds the maximum allowed file size.';
 $_['text_error_import_skipped']             = 'The following CSV row(s) were skipped because they failed validation: %s.';
 
@@ -166,7 +157,6 @@ $_['text_warning_backup_delete']           = 'Deleted backups cannot be recovere
 
 // Success
 $_['text_success_import']       = '%s shipping rates have been added and %s shipping rates have been updated.';
-$_['text_success_support']      = 'Thank you for contacting us. Your support request has been received.';
 $_['text_success_debug_clear']  = 'Your debug log is now empty.';
 $_['text_success_debug_reload'] = 'Your debug log has been reloaded.';
 $_['text_success_cache_clear']  = 'Your cache has been cleared.';
@@ -212,7 +202,6 @@ $_['modal_backup_body']         = '<p>Restore your shipping rates using previous
 // Help Text
 $_['help_combinations']         = '<h3>Combining Rates</h3><p>Combine separate shipping rates into a single option using formulas like SUM({A}) or MAX({A},{B}).</p>';
 $_['help_settings']             = '<ul><li>Settings save automatically as you make changes.</li></ul>';
-$_['help_support']              = '<p>Need help setting up rates? Send a support request with your order details.</p>';
 
 // Tooltips
 $_['tooltip_status']            = 'Overall status of Advanced Shipping.';
