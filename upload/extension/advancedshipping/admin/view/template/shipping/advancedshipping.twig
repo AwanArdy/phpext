@@ -52,41 +52,41 @@
             <h2>{{ text.heading_rates }}</h2>
             <div class="box">
               <form id="rates" action="{{ action_delete }}" method="post">
-                <table class="as-rates table table-hover table-responsive">
+                <table class="as-rates table table-hover table-responsive align-middle text-center">
                   <thead>
                     <tr>
-                      <th class="text-left">&nbsp;</th>
-                      <th class="text-left">{{ text.column_description }}</th>
-                      <th class="text-left">{{ text.column_name }}</th>
-                      <th class="text-left">{{ text.column_status }}</th>
-                      <th class="text-left">{{ text.column_group }}</th>
-                      <th class="text-right">&nbsp;</th>
+                      <th class="text-center" style="width: 50px;">&nbsp;</th>
+                      <th class="text-center">{{ text.column_description }}</th>
+                      <th class="text-center">{{ text.column_name }}</th>
+                      <th class="text-center">{{ text.column_status }}</th>
+                      <th class="text-center">{{ text.column_group }}</th>
+                      <th class="text-center">&nbsp;</th>
                     </tr>
                     <tr id="filter">
-                      <th><div class="as-checkbox"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" id="select-rate-all"><label for="select-rate-all">&nbsp;</label></div></th>
-                      <th><input type="text" name="filter_description" value="" placeholder="{{ text.placeholder_filter_description }}" class="form-control filter" /></th>
-                      <th><input type="text" name="filter_name" value="" placeholder="{{ text.placeholder_filter_name }}" class="form-control filter" /></th>
-                      <th>
-                        <select name="filter_status" class="form-control filter">
+                      <th class="text-center"><div class="as-checkbox"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" id="select-rate-all"><label for="select-rate-all">&nbsp;</label></div></th>
+                      <th class="text-center"><input type="text" name="filter_description" value="" placeholder="{{ text.placeholder_filter_description }}" class="form-control filter text-center" /></th>
+                      <th class="text-center"><input type="text" name="filter_name" value="" placeholder="{{ text.placeholder_filter_name }}" class="form-control filter text-center" /></th>
+                      <th class="text-center">
+                        <select name="filter_status" class="form-control filter text-center">
                           <option value="">{{ text.placeholder_filter_status }}</option>
                           <option value="1">{{ text.text_on }}</option>
                           <option value="0">{{ text.text_off }}</option>
                         </select>
                       </th>
-                      <th><input type="text" name="filter_group" value="" placeholder="{{ text.placeholder_filter_group }}" class="form-control filter" /></th>
-                      <th class="text-right"><a role="button" id="clearFilter" class="btn btn-default">{{ text.button_filter }}</a></th>
+                      <th class="text-center"><input type="text" name="filter_group" value="" placeholder="{{ text.placeholder_filter_group }}" class="form-control filter text-center" /></th>
+                      <th class="text-center"><a role="button" id="clearFilter" class="btn btn-default">{{ text.button_filter }}</a></th>
                     </tr>
                   </thead>
                   <tbody id="rates-body">
                     {% if rates %}
                       {% for rate in rates %}
                       <tr data-rate-edit="{{ rate.edit }}" id="rate{{ rate.rate_id }}">
-                        <td class="text-left"><div class="as-checkbox"><input type="checkbox" name="selected[]" value="{{ rate.rate_id }}" id="select-rate-{{ rate.rate_id }}"><label for="select-rate-{{ rate.rate_id }}">&nbsp;</label></div></td>
-                        <td class="text-left"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.description }}</a></td>
-                        <td class="text-left"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.name }}</a></td>
-                        <td class="text-left">{{ rate.status }}</td>
-                        <td class="text-left">{{ rate.group }}</td>
-                        <td class="text-right">&nbsp;</td>
+                        <td class="text-center"><div class="as-checkbox"><input type="checkbox" name="selected[]" value="{{ rate.rate_id }}" id="select-rate-{{ rate.rate_id }}"><label for="select-rate-{{ rate.rate_id }}">&nbsp;</label></div></td>
+                        <td class="text-center"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.description }}</a></td>
+                        <td class="text-center"><a role="button" href="{{ rate.edit }}" class="btn btn-link">{{ rate.name }}</a></td>
+                        <td class="text-center">{{ rate.status }}</td>
+                        <td class="text-center">{{ rate.group }}</td>
+                        <td class="text-center">&nbsp;</td>
                       </tr>
                       {% endfor %}
                     {% else %}
@@ -702,12 +702,12 @@
         if (json['success'] && json['rates']) {
           $.each(json['rates'], function(index, value) {
             html += '<tr data-rate-edit="'+ value['edit'] +'" id="rate'+ value['rate_id'] +'">';
-            html += '  <td class="text-left"><div class="as-checkbox"><input type="checkbox" name="selected[]" value="'+ value['rate_id'] +'" id="select-rate-'+ value['rate_id'] +'"><label for="select-rate-'+ value['rate_id'] +'">&nbsp;</label></div></td>';
-            html += '  <td class="text-left"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['description'] +'</a></td>';
-            html += '  <td class="text-left"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['name'] +'</a></td>';
-            html += '  <td class="text-left">'+ value['status'] +'</td>';
-            html += '  <td class="text-left">'+ value['group'] +'</td>';
-            html += '  <td class="text-right">&nbsp;</td>';
+            html += '  <td class="text-center"><div class="as-checkbox"><input type="checkbox" name="selected[]" value="'+ value['rate_id'] +'" id="select-rate-'+ value['rate_id'] +'"><label for="select-rate-'+ value['rate_id'] +'">&nbsp;</label></div></td>';
+            html += '  <td class="text-center"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['description'] +'</a></td>';
+            html += '  <td class="text-center"><a role="button" href="'+ value['edit'] +'" class="btn btn-link">'+ value['name'] +'</a></td>';
+            html += '  <td class="text-center">'+ value['status'] +'</td>';
+            html += '  <td class="text-center">'+ value['group'] +'</td>';
+            html += '  <td class="text-center">&nbsp;</td>';
             html += '</tr>';
           });
         } else {

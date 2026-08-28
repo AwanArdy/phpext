@@ -280,6 +280,51 @@ ul li {
 	padding: 0;
 }
 
+.as-rates th,
+.as-rates td {
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+
+.as-rates .form-control {
+	text-align: center;
+	vertical-align: middle;
+}
+
+.as-rates .as-checkbox,
+.text-center > .as-checkbox {
+	padding: 0;
+	margin: 0 auto;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.as-rates .as-checkbox label,
+.text-center > .as-checkbox label {
+	padding-left: 20px;
+	margin: 0;
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.as-rates .as-checkbox label::before,
+.text-center > .as-checkbox label::before {
+	left: 50%;
+	top: 50%;
+	margin-left: -10px;
+	margin-top: -8.5px;
+}
+
+.as-rates .as-checkbox label::after,
+.text-center > .as-checkbox label::after {
+	left: 50%;
+	top: 50%;
+	margin-left: -10px;
+	margin-top: -8px;
+}
+
 /* Combinations */
 #combinations > thead > tr > th,
 #combinations > thead > tr > td,

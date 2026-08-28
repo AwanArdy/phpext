@@ -200,7 +200,188 @@ $_['modal_backup_header']       = 'Backups';
 $_['modal_backup_body']         = '<p>Restore your shipping rates using previous backup files.</p>';
 
 // Help Text
-$_['help_combinations']         = '<h3>Combining Rates</h3><p>Combine separate shipping rates into a single option using formulas like SUM({A}) or MAX({A},{B}).</p>';
+$_['help_combinations']         = '<div class="as-help-combinations">
+  <h3 class="mb-3"><i class="fa fa-info-circle text-primary"></i> Guide to Rate Combinations</h3>
+  <p class="lead" style="font-size: 1.05rem;">
+    Rate Combinations allow you to merge multiple individual shipping rates (defined by <strong>Group</strong> identifiers such as <code>A</code>, <code>B</code>, <code>C</code>) into a single consolidated shipping method presented to the customer during checkout.
+  </p>
+
+  <hr class="my-4">
+
+  <h4><i class="fa fa-list-ol text-info"></i> How to Set Up a Combination (Step-by-Step)</h4>
+  <ol class="mb-4">
+    <li class="mb-2">
+      <strong>Assign Group Identifiers to Rates:</strong><br>
+      Go to the <em>Shipping Rates</em> tab. For each rate you want to combine, edit the rate and set its <strong>Group</strong> field to a letter or code (for example: <code>A</code> for Standard Shipping, <code>B</code> for Express or Heavy Item Shipping).
+    </li>
+    <li class="mb-2">
+      <strong>Add a Combination Rule:</strong><br>
+      Click the <strong>Add Combination</strong> button above. A new row will be created in the table.
+    </li>
+    <li class="mb-2">
+      <strong>Configure Display & Method:</strong><br>
+      Set the <strong>Sort Order</strong>, choose the <strong>Shipping Name Display</strong> (e.g. <em>Combined Rate Titles</em> or <em>Custom Title</em>), and select the <strong>Group Requirement Method</strong>.
+    </li>
+    <li class="mb-2">
+      <strong>Write the Combination Formula:</strong><br>
+      Enter your formula using group tags enclosed in curly braces, such as <code>SUM({A},{B})</code> or <code>MAX({A},{B})</code>.
+    </li>
+    <li class="mb-2">
+      <strong>Save Changes:</strong><br>
+      All changes save automatically as you edit.
+    </li>
+  </ol>
+
+  <h4><i class="fa fa-sliders text-info"></i> Explanation of Combination Table Columns</h4>
+  <div class="table-responsive mb-4">
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 20%;">Column</th>
+          <th>Description & Usage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Sort Order</strong></td>
+          <td>Determines the priority order in which combination rules are evaluated at checkout. Lower numbers are processed first.</td>
+        </tr>
+        <tr>
+          <td><strong>Shipping Name When Combining Rates</strong></td>
+          <td>
+            Controls how the final shipping option title appears to the customer in checkout:
+            <ul class="mb-0 mt-1">
+              <li><strong>First Rate Title:</strong> Uses the title of the first matching rate in the combination.</li>
+              <li><strong>Last Rate Title:</strong> Uses the title of the last matching rate in the combination.</li>
+              <li><strong>Combined Rate Titles:</strong> Concatenates the titles of all combined rates (e.g. <em>"Standard Delivery + Heavy Freight"</em>).</li>
+              <li><strong>Custom Title:</strong> Displays a custom multi-language title typed by you into the text box that appears.</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Combine Rates Formula</strong></td>
+          <td>
+            The mathematical expression that computes the combined rate cost using group placeholders (e.g. <code>{A}</code>, <code>{B}</code>). See below for supported functions.
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Rate Group Requirement Method</strong></td>
+          <td>
+            Defines whether all groups in the formula must match:
+            <ul class="mb-0 mt-1">
+              <li><strong>All Rate Groups Required:</strong> The combination is displayed <em>only</em> if every single group listed in the formula generates a valid shipping rate for the current cart contents.</li>
+              <li><strong>Any Rate Group Required:</strong> The combination is displayed if <em>at least one</em> group generates a valid rate. Groups without a valid rate evaluate to <code>0</code>.</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4><i class="fa fa-calculator text-info"></i> Supported Formula Functions & Mathematical Operators</h4>
+  <div class="table-responsive mb-4">
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th style="width: 25%;">Function / Operator</th>
+          <th style="width: 30%;">Formula Example</th>
+          <th>Behavior & Explanation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>SUM(...)</code> or <code>+</code></td>
+          <td><code>SUM({A},{B})</code> or <code>{A} + {B}</code></td>
+          <td>Adds together the calculated shipping costs of group A and group B. Useful when items ship from separate warehouses or vendors.</td>
+        </tr>
+        <tr>
+          <td><code>MAX(...)</code></td>
+          <td><code>MAX({A},{B})</code></td>
+          <td>Selects the highest calculated shipping cost between group A and group B. Useful when charging only the highest applicable rate.</td>
+        </tr>
+        <tr>
+          <td><code>MIN(...)</code></td>
+          <td><code>MIN({A},{B})</code></td>
+          <td>Selects the lowest calculated shipping cost between group A and group B. Useful for promotional or discounted shipping rates.</td>
+        </tr>
+        <tr>
+          <td><code>AVG(...)</code></td>
+          <td><code>AVG({A},{B})</code></td>
+          <td>Calculates the mathematical average of the shipping costs generated by group A and group B.</td>
+        </tr>
+        <tr>
+          <td>Arithmetic Operators (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>)</td>
+          <td><code>SUM({A},{B}) * 1.1</code><br><code>MAX({A},{B}) + 5.00</code></td>
+          <td>Allows adding fixed surcharges, applying percentage markup/discounts (e.g. <code>* 1.1</code> for 10% extra fee), or nested expressions like <code>SUM({A},{B}) - 2.50</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4><i class="fa fa-lightbulb-o text-info"></i> Common Real-World Scenarios & Examples</h4>
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <div class="card h-100 border-info">
+        <div class="card-header bg-info text-white fw-bold">
+          <i class="fa fa-cubes"></i> Scenario 1: Multi-Supplier / Multi-Warehouse Orders
+        </div>
+        <div class="card-body">
+          <p><strong>Requirement:</strong> Cart contains items from Warehouse A (Group <code>A</code>) and Warehouse B (Group <code>B</code>). Customer must pay the sum of shipping for both warehouses.</p>
+          <ul class="mb-0">
+            <li><strong>Formula:</strong> <code>SUM({A},{B})</code></li>
+            <li><strong>Method:</strong> <em>All Rate Groups Required</em></li>
+            <li><strong>Result:</strong> If cart has items from both warehouses, total shipping = Rate A + Rate B.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="card h-100 border-success">
+        <div class="card-header bg-success text-white fw-bold">
+          <i class="fa fa-truck"></i> Scenario 2: Standard + Heavy Goods (Highest Fee Only)
+        </div>
+        <div class="card-body">
+          <p><strong>Requirement:</strong> Cart contains regular items (Group <code>A</code>) and heavy items (Group <code>B</code>). Charge only the highest shipping fee so the customer isn\'t overcharged.</p>
+          <ul class="mb-0">
+            <li><strong>Formula:</strong> <code>MAX({A},{B})</code></li>
+            <li><strong>Method:</strong> <em>Any Rate Group Required</em></li>
+            <li><strong>Result:</strong> Checkout shows whichever rate is higher between Rate A and Rate B.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="card h-100 border-warning">
+        <div class="card-header bg-warning text-dark fw-bold">
+          <i class="fa fa-tag"></i> Scenario 3: Base Rate + Mandatory Handling Fee
+        </div>
+        <div class="card-body">
+          <p><strong>Requirement:</strong> Calculate standard shipping (Group <code>A</code>) and add a fixed $5.00 handling surcharge.</p>
+          <ul class="mb-0">
+            <li><strong>Formula:</strong> <code>{A} + 5.00</code> or <code>SUM({A}) + 5.00</code></li>
+            <li><strong>Method:</strong> <em>All Rate Groups Required</em></li>
+            <li><strong>Result:</strong> Shipping cost = Rate A + $5.00.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="card h-100 border-secondary">
+        <div class="card-header bg-secondary text-white fw-bold">
+          <i class="fa fa-percent"></i> Scenario 4: Combining 3 Groups with Percentage Surcharge
+        </div>
+        <div class="card-body">
+          <p><strong>Requirement:</strong> Combine rates for 3 categories (Groups <code>A</code>, <code>B</code>, <code>C</code>) and add 10% tax/fee markup.</p>
+          <ul class="mb-0">
+            <li><strong>Formula:</strong> <code>SUM({A},{B},{C}) * 1.10</code></li>
+            <li><strong>Method:</strong> <em>Any Rate Group Required</em></li>
+            <li><strong>Result:</strong> Adds all applicable rates among A, B, C and increases total by 10%.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>';
 $_['help_settings']             = '<ul><li>Settings save automatically as you make changes.</li></ul>';
 
 // Tooltips

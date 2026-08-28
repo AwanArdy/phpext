@@ -557,7 +557,7 @@ Pakai **Rate Type = Cart Weight** dengan tabel:
 Setelah instalasi, buka halaman pengaturan Advanced Shipping melalui:  
 **Extensions → Extensions → Shipping → Advanced Shipping → Edit**
 
-Halaman utama memiliki 4 tab:
+Halaman utama memiliki 3 tab:
 
 ### 1. Pengaturan Umum
 
