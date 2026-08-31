@@ -365,6 +365,11 @@ ul li {
 }
 
 /* Rate rows / Requirement rows */
+.rate-rows,
+#requirement-rows {
+	margin-bottom: 0;
+}
+
 .rate-rows thead,
 #requirement-rows thead {
 	background-color: var(--as-muted);
@@ -386,6 +391,12 @@ ul li {
 	vertical-align: top;
 	font-weight: normal;
 	border-bottom: 1px solid var(--as-border);
+}
+
+.rate-rows > tfoot > tr > td,
+#requirement-rows > tfoot > tr > td {
+	padding-top: 6px;
+	padding-bottom: 6px;
 }
 
 /* Action cells */

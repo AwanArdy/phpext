@@ -485,11 +485,11 @@
                     {% endif %}
                   </tbody>
                   <tfoot>
-                    <tr id="{{ rate_id }}-requirement-footer"><td colspan="3">&nbsp;</td><td class="text-right"><button type="button" onclick="addRequirement({{ rate_id }});" class="btn btn-oca"><i class="fa fa-plus-circle"></i></button></td></tr>
+                    <tr id="{{ rate_id }}-requirement-footer"><td colspan="3"></td><td class="text-right"><button type="button" onclick="addRequirement({{ rate_id }});" class="btn btn-oca"><i class="fa fa-plus-circle"></i></button></td></tr>
                   </tfoot>
                 </table>
               </div>
-              <div class="text-center">
+              <div class="text-center mt-2 mb-2">
                 <div class="as-checkbox"><input type="checkbox" name="fail_method" id="fail-method" value="1" {% if data.fail_method %}checked="checked"{% endif %}><label for="fail-method">{{ text.entry_fail_method }}</label></div>
               </div>
             </div>
