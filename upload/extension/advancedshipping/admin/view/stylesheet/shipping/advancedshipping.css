@@ -291,8 +291,7 @@ ul li {
 	vertical-align: middle;
 }
 
-.as-rates .as-checkbox,
-.text-center > .as-checkbox {
+.as-rates .as-checkbox {
 	padding: 0 !important;
 	margin: 0 auto !important;
 	display: inline-block !important;
@@ -303,29 +302,44 @@ ul li {
 	text-align: center !important;
 }
 
-.as-rates .as-checkbox label,
-.text-center > .as-checkbox label {
+.as-rates .as-checkbox input[type="checkbox"] {
+	position: absolute !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 17px !important;
+	height: 17px !important;
+	margin: 0 !important;
+	opacity: 0 !important;
+	z-index: 2 !important;
+	cursor: pointer !important;
+}
+
+.as-rates .as-checkbox label {
 	padding: 0 !important;
 	margin: 0 !important;
 	width: 17px !important;
 	height: 17px !important;
-	position: relative !important;
+	position: absolute !important;
+	top: 0 !important;
+	left: 0 !important;
 	display: block !important;
 	vertical-align: middle !important;
+	cursor: pointer !important;
 }
 
-.as-rates .as-checkbox label::before,
-.text-center > .as-checkbox label::before {
+.as-rates .as-checkbox label::before {
+	position: absolute !important;
 	left: 0 !important;
 	top: 0 !important;
 	margin: 0 !important;
 	transform: none !important;
 	width: 17px !important;
 	height: 17px !important;
+	box-sizing: border-box !important;
 }
 
-.as-rates .as-checkbox label::after,
-.text-center > .as-checkbox label::after {
+.as-rates .as-checkbox label::after {
+	position: absolute !important;
 	left: 0 !important;
 	top: 0 !important;
 	margin: 0 !important;
@@ -333,6 +347,7 @@ ul li {
 	width: 17px !important;
 	height: 17px !important;
 	padding: 1px 0 0 3px !important;
+	box-sizing: border-box !important;
 }
 
 /* Combinations */
@@ -708,52 +723,69 @@ label.control-label span:after {
 
 /* ---- Custom checkboxes ---- */
 .as-checkbox {
-	padding-left: 10px;
-	padding-top: 10px;
+	position: relative;
+	display: inline-block;
+	min-height: 20px;
+	padding-left: 24px;
 	margin: 0;
+	text-align: left;
+}
+
+.as-well .as-checkbox {
+	display: block;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin-bottom: 0;
 }
 
 .as-checkbox label {
 	display: inline-block;
 	position: relative;
 	vertical-align: middle;
-	padding-left: 5px;
+	padding-left: 0;
 	margin: 0;
 	cursor: pointer;
+	font-weight: normal;
+	line-height: 20px;
 }
 
 .as-checkbox label::before {
 	content: "";
 	display: inline-block;
 	position: absolute;
-	left: 0;
-	top: 0;
+	left: -24px;
+	top: 1px;
 	width: 17px;
 	height: 17px;
-	margin-left: -20px;
 	border: 1px solid var(--as-border-strong);
 	border-radius: var(--as-radius);
 	background-color: var(--as-white);
 	transition: border 0.15s ease-in-out, background-color 0.15s ease-in-out;
+	box-sizing: border-box;
 }
 
 .as-checkbox label::after {
 	display: inline-block;
 	position: absolute;
-	left: 0;
-	top: 0;
-	width: 16px;
-	height: 16px;
-	margin-left: -20px;
+	left: -24px;
+	top: 1px;
+	width: 17px;
+	height: 17px;
 	padding: 1px 0 0 3px;
 	font-size: 11px;
 	color: var(--as-white);
+	box-sizing: border-box;
 }
 
 .as-checkbox input[type="checkbox"] {
+	position: absolute;
+	left: 0;
+	top: 1px;
+	width: 17px;
+	height: 17px;
+	margin: 0;
 	opacity: 0;
-	z-index: 1;
-	margin: 4px 0 0;
+	z-index: 2;
 	cursor: pointer;
 }
 
